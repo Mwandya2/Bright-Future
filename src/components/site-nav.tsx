@@ -4,9 +4,10 @@ import { ButtonLink } from "@/components/ui";
 
 const links = [
   { href: "/courses", label: "Courses" },
-  { href: "/#services", label: "Services" },
   { href: "/#modules", label: "Ecosystem" },
   { href: "/#pricing", label: "Pricing" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export async function SiteNav() {

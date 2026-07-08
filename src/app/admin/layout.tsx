@@ -6,6 +6,7 @@ const items: NavItem[] = [
   { href: "/admin/courses", label: "Courses", icon: "▦" },
   { href: "/admin/bookings", label: "Lab Bookings", icon: "▤" },
   { href: "/admin/orders", label: "Print Orders", icon: "◨" },
+  { href: "/admin/messages", label: "Messages", icon: "✉" },
   { href: "/admin/users", label: "Users", icon: "◉" },
   { href: "/dashboard", label: "My Hub", icon: "↩" },
 ];

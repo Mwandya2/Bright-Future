@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ButtonLink, Card, Badge, SectionLabel } from "@/components/ui";
+import { GsapReveal } from "@/components/gsap-reveal";
 
 const services = [
   {
@@ -82,6 +83,7 @@ const pricing = [
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
+      <GsapReveal />
       <SiteNav />
       <main className="flex-1">
         {/* Hero */}
@@ -90,16 +92,16 @@ export default function Home() {
           <div className="orb orb-lavender orb-animate" style={{ width: 380, height: 380, top: 40, right: -80, animationDelay: "3s" }} />
           <div className="orb orb-peach orb-animate" style={{ width: 300, height: 300, bottom: -120, left: "40%", animationDelay: "6s" }} />
           <div className="container-edge relative z-10 flex flex-col items-center py-28 text-center md:py-36">
-            <Badge>ICT · Digital Services · Innovation</Badge>
-            <h1 className="font-display mt-6 max-w-4xl text-5xl leading-[1.05] tracking-tight md:text-7xl">
+            <div data-hero><Badge>ICT · Digital Services · Innovation</Badge></div>
+            <h1 data-hero className="font-display mt-6 max-w-4xl text-5xl leading-[1.05] tracking-tight md:text-7xl">
               Empowering digital futures for the next generation
             </h1>
-            <p className="mt-6 max-w-2xl text-lg text-[var(--color-body)] md:text-xl">
+            <p data-hero className="mt-6 max-w-2xl text-lg text-[var(--color-body)] md:text-xl">
               Bright Future is a complete digital empowerment ecosystem — ICT
               education, computer-lab access, digital printing, freelance
               services, and business support in one modern platform.
             </p>
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <div data-hero className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <ButtonLink href="/signup" variant="primary" className="h-11 px-6">
                 Get started free
               </ButtonLink>
@@ -107,7 +109,7 @@ export default function Home() {
                 Explore courses
               </ButtonLink>
             </div>
-            <div className="mt-14 grid w-full max-w-2xl grid-cols-3 gap-6">
+            <div data-hero className="mt-14 grid w-full max-w-2xl grid-cols-3 gap-6">
               {[
                 ["9", "Integrated modules"],
                 ["50+", "ICT courses"],
@@ -131,7 +133,7 @@ export default function Home() {
             </h2>
             <div className="mt-12 grid gap-6 md:grid-cols-2">
               {services.map((s) => (
-                <Link key={s.title} href={s.href}>
+                <Link key={s.title} href={s.href} className="reveal">
                   <Card className="group h-full overflow-hidden transition hover:shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
                     <div className={`h-32 ${s.cover}`} />
                     <div className="p-7">
@@ -167,7 +169,7 @@ export default function Home() {
             </p>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {modules.map(([title, body], i) => (
-                <Card key={title} className="p-6">
+                <Card key={title} className="reveal p-6">
                   <div className="text-[13px] font-semibold text-[var(--color-muted-soft)]">
                     {String(i + 1).padStart(2, "0")}
                   </div>
@@ -194,7 +196,7 @@ export default function Home() {
               {smartFeatures.map((f) => (
                 <div
                   key={f}
-                  className="rounded-xl border border-white/10 bg-[var(--color-surface-dark-elevated)] p-5"
+                  className="reveal rounded-xl border border-white/10 bg-[var(--color-surface-dark-elevated)] p-5"
                 >
                   <span className="text-[16px] font-medium text-white">{f}</span>
                 </div>
@@ -218,8 +220,8 @@ export default function Home() {
                   key={p.name}
                   className={
                     p.featured
-                      ? "border-0 bg-[var(--color-surface-dark)] p-8 text-white"
-                      : "p-8"
+                      ? "reveal border-0 bg-[var(--color-surface-dark)] p-8 text-white"
+                      : "reveal p-8"
                   }
                 >
                   <h3 className={p.featured ? "text-lg font-medium text-white" : "text-lg font-medium text-[var(--color-ink)]"}>

@@ -22,9 +22,9 @@ const cols = [
   {
     title: "Company",
     links: [
-      ["About", "/#about"],
+      ["About", "/about"],
       ["Pricing", "/#pricing"],
-      ["Contact", "/#contact"],
+      ["Contact", "/contact"],
       ["Sign in", "/login"],
     ],
   },

@@ -5,10 +5,10 @@
   --color-ink: #0c0a09;
   --color-primary: #292524;
   --color-primary-active: #0c0a09;
-  --color-body: #4e4e4e;
-  --color-body-strong: #292524;
-  --color-muted: #777169;
-  --color-muted-soft: #a8a29e;
+  --color-body: #3d3a37;        /* darkened for stronger readability (AA) */
+  --color-body-strong: #211e1c;
+  --color-muted: #635c54;        /* darkened: passes AA on the canvas */
+  --color-muted-soft: #8b857d;
 
   --color-hairline: #e7e5e4;
   --color-hairline-soft: #f0efed;
@@ -57,15 +57,24 @@ body {
   background: var(--color-canvas);
   color: var(--color-body);
   font-family: var(--font-sans);
-  letter-spacing: 0.16px;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.1px;
 }
 
 /* Display type: editorial serif at weight 300, never bold. */
 .font-display {
   font-family: var(--font-display);
   font-weight: 300;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
   color: var(--color-ink);
+}
+
+/* GSAP scroll-reveal: elements animate in via JS (gsap.from), so with JS
+   disabled they simply render normally — no hidden content. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; }
 }
 
 .section {
