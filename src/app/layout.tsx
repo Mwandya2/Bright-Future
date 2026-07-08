@@ -1,18 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, EB_Garamond } from "next/font/google";
+import { Inter } from "next/font/google";
 import { SplashScreen } from "@/components/splash-screen";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-inter",
-  display: "swap",
-});
-
-const garamond = EB_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-garamond",
   display: "swap",
 });
 
@@ -45,7 +39,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${garamond.variable}`}>
+    <html lang="en" className={inter.variable}>
       <body className="min-h-full antialiased">
         <SplashScreen />
         {children}

@@ -88,9 +88,7 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <div className="orb orb-mint orb-animate" style={{ width: 420, height: 420, top: -80, left: -60 }} />
-          <div className="orb orb-lavender orb-animate" style={{ width: 380, height: 380, top: 40, right: -80, animationDelay: "3s" }} />
-          <div className="orb orb-peach orb-animate" style={{ width: 300, height: 300, bottom: -120, left: "40%", animationDelay: "6s" }} />
+          <div className="mesh-hero" />
           <div className="container-edge relative z-10 flex flex-col items-center py-28 text-center md:py-36">
             <div data-hero><Badge>ICT · Digital Services · Innovation</Badge></div>
             <h1 data-hero className="font-display mt-6 max-w-4xl text-5xl leading-[1.05] tracking-tight md:text-7xl">

@@ -1,42 +1,47 @@
 @import "tailwindcss";
 
-/* ─── ElevenLabs-inspired editorial design tokens ─── */
+/* ─── Stripe-inspired design tokens ─── */
 @theme {
-  --color-ink: #0c0a09;
-  --color-primary: #292524;
-  --color-primary-active: #0c0a09;
-  --color-body: #3d3a37;        /* darkened for stronger readability (AA) */
-  --color-body-strong: #211e1c;
-  --color-muted: #635c54;        /* darkened: passes AA on the canvas */
-  --color-muted-soft: #8b857d;
+  --color-ink: #0d253d;              /* deep navy — primary text */
+  --color-primary: #533afd;          /* electric indigo — CTA */
+  --color-primary-active: #2e2b8c;   /* indigo press */
+  --color-primary-deep: #4434d4;
+  --color-primary-subtle: #ececfe;   /* pale indigo tag bg */
+  --color-body: #3c4b61;             /* readable navy-grey body */
+  --color-body-strong: #0d253d;
+  --color-muted: #64748d;
+  --color-muted-soft: #8a96a9;
 
-  --color-hairline: #e7e5e4;
-  --color-hairline-soft: #f0efed;
-  --color-hairline-strong: #d6d3d1;
+  --color-hairline: #e3e8ee;
+  --color-hairline-soft: #eef2f7;
+  --color-hairline-strong: #d5dde7;
 
-  --color-canvas: #f5f5f5;
-  --color-canvas-soft: #fafafa;
-  --color-canvas-deep: #0c0a09;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #f6f9fc;      /* cool off-white feature band */
+  --color-canvas-cream: #f5e9d4;     /* warm interlude band */
+  --color-canvas-deep: #0d253d;
   --color-surface-card: #ffffff;
-  --color-surface-strong: #f0efed;
-  --color-surface-dark: #0c0a09;
-  --color-surface-dark-elevated: #1c1917;
+  --color-surface-strong: #eef2f7;
+  --color-surface-dark: #1c1e54;     /* brand navy — dashboard / featured */
+  --color-surface-dark-elevated: #262a63;
 
   --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
-  --color-on-dark-soft: #a8a29e;
+  --color-on-dark-soft: #a6b0cf;
 
-  --color-mint: #a7e5d3;
-  --color-peach: #f4c5a8;
-  --color-lavender: #c8b8e0;
-  --color-sky: #a8c8e8;
-  --color-rose: #e8b8c4;
+  /* Gradient-mesh stops (also power chips / covers) */
+  --color-mint: #6ea8ff;   /* blue */
+  --color-peach: #f6b98f;  /* sherbet */
+  --color-lavender: #c9b8f0;
+  --color-sky: #665efd;    /* indigo-soft */
+  --color-rose: #f96bee;   /* magenta */
+  --color-ruby: #ea2261;
 
   --color-success: #16a34a;
-  --color-error: #dc2626;
+  --color-error: #ea2261;
 
   --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-garamond), "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -57,22 +62,27 @@ body {
   background: var(--color-canvas);
   color: var(--color-body);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
-  letter-spacing: 0.1px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0;
+  font-feature-settings: "ss01";     /* Stripe stylistic set, globally */
 }
 
-/* Display type: editorial serif at weight 300, never bold. */
+/* Display type: thin (300) with negative tracking — the Stripe signature. */
 .font-display {
   font-family: var(--font-display);
   font-weight: 300;
-  letter-spacing: -0.015em;
-  line-height: 1.1;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--color-ink);
+  font-feature-settings: "ss01";
 }
 
-/* GSAP scroll-reveal: elements animate in via JS (gsap.from), so with JS
-   disabled they simply render normally — no hidden content. */
+/* Tabular figures for money / numeric cells. */
+.tnum { font-feature-settings: "tnum"; }
+
+/* GSAP scroll-reveal safety for reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; }
 }
@@ -88,31 +98,45 @@ summary {
 }
 button:disabled { cursor: not-allowed; }
 
-/* Tinted dashboard background so it never reads as plain white. */
+/* ─── Signature: gradient mesh backdrop for marketing heroes ─── */
+.mesh-hero {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 660px;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 60% at 6% 22%, #f5e9d4 0%, transparent 60%),
+    radial-gradient(42% 62% at 26% 8%, #f6b98f 0%, transparent 60%),
+    radial-gradient(48% 68% at 50% 26%, #c9b8f0 0%, transparent 62%),
+    radial-gradient(52% 72% at 74% 10%, #533afd 0%, transparent 55%),
+    radial-gradient(44% 64% at 93% 28%, #ea2261 0%, transparent 55%),
+    radial-gradient(40% 58% at 66% 42%, #f96bee 0%, transparent 55%);
+  filter: blur(46px) saturate(1.08);
+  opacity: 0.82;
+  -webkit-mask-image: linear-gradient(to bottom, #000 42%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 42%, transparent 92%);
+}
+
+/* Tinted dashboard (dark-app track) background wash. */
 .dash-bg {
   background:
-    radial-gradient(900px 460px at 100% -8%, color-mix(in srgb, var(--color-sky) 26%, transparent), transparent 62%),
-    radial-gradient(820px 460px at -6% 108%, color-mix(in srgb, var(--color-mint) 24%, transparent), transparent 60%),
-    radial-gradient(700px 500px at 55% 120%, color-mix(in srgb, var(--color-lavender) 18%, transparent), transparent 60%),
-    var(--color-canvas);
+    radial-gradient(900px 460px at 100% -8%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 62%),
+    radial-gradient(820px 460px at -6% 108%, color-mix(in srgb, var(--color-lavender) 24%, transparent), transparent 60%),
+    radial-gradient(700px 500px at 55% 120%, color-mix(in srgb, var(--color-mint) 16%, transparent), transparent 60%),
+    var(--color-canvas-soft);
   background-attachment: fixed;
 }
 
-/* Soft gradient accent chips for stat cards. */
+/* Gradient accent chips (stat cards, avatars, covers). */
 .chip-mint { background: linear-gradient(135deg, var(--color-mint), var(--color-sky)); }
-.chip-peach { background: linear-gradient(135deg, var(--color-peach), var(--color-rose)); }
-.chip-lavender { background: linear-gradient(135deg, var(--color-lavender), var(--color-sky)); }
+.chip-peach { background: linear-gradient(135deg, var(--color-peach), var(--color-ruby)); }
+.chip-lavender { background: linear-gradient(135deg, var(--color-lavender), var(--color-primary)); }
 .chip-sky { background: linear-gradient(135deg, var(--color-sky), var(--color-mint)); }
-.chip-rose { background: linear-gradient(135deg, var(--color-rose), var(--color-peach)); }
+.chip-rose { background: linear-gradient(135deg, var(--color-rose), var(--color-ruby)); }
 
-.section {
-  padding-block: 96px;
-}
-@media (max-width: 640px) {
-  .section {
-    padding-block: 56px;
-  }
-}
+.section { padding-block: 96px; }
+@media (max-width: 640px) { .section { padding-block: 56px; } }
 
 .container-edge {
   max-width: 1200px;
@@ -120,12 +144,12 @@ button:disabled { cursor: not-allowed; }
   padding-inline: 24px;
 }
 
-/* Atmospheric gradient orbs — pure decoration. */
+/* Decorative orbs (inner-page heroes) — now Stripe-hued. */
 .orb {
   position: absolute;
   border-radius: 9999px;
   filter: blur(64px);
-  opacity: 0.55;
+  opacity: 0.45;
   pointer-events: none;
   z-index: 0;
 }
@@ -135,10 +159,10 @@ button:disabled { cursor: not-allowed; }
 .orb-sky { background: radial-gradient(circle, var(--color-sky), transparent 70%); }
 .orb-rose { background: radial-gradient(circle, var(--color-rose), transparent 70%); }
 
-/* Card gradient headers for course covers. */
+/* Course-cover gradient headers. */
 .cover-mint { background: linear-gradient(135deg, var(--color-mint), var(--color-sky)); }
-.cover-peach { background: linear-gradient(135deg, var(--color-peach), var(--color-rose)); }
-.cover-lavender { background: linear-gradient(135deg, var(--color-lavender), var(--color-sky)); }
+.cover-peach { background: linear-gradient(135deg, var(--color-peach), var(--color-ruby)); }
+.cover-lavender { background: linear-gradient(135deg, var(--color-lavender), var(--color-primary)); }
 .cover-sky { background: linear-gradient(135deg, var(--color-sky), var(--color-mint)); }
 .cover-rose { background: linear-gradient(135deg, var(--color-rose), var(--color-lavender)); }
 

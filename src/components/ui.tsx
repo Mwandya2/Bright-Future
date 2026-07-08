@@ -13,9 +13,9 @@ const buttonVariants: Record<ButtonVariant, string> = {
   primary:
     "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-active)]",
   outline:
-    "bg-transparent text-[var(--color-ink)] border border-[var(--color-hairline-strong)] hover:bg-[var(--color-surface-strong)]",
-  ghost: "bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-surface-strong)]",
-  dark: "bg-white text-[var(--color-ink)] hover:bg-[var(--color-canvas)]",
+    "bg-white text-[var(--color-primary)] border border-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)]",
+  ghost: "bg-transparent text-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)]",
+  dark: "bg-white text-[var(--color-ink)] hover:bg-[var(--color-canvas-soft)]",
 };
 
 export function Button({
@@ -57,7 +57,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl bg-white border border-[var(--color-hairline)]",
+        "rounded-[12px] bg-white border border-[var(--color-hairline)] shadow-[0_1px_3px_rgba(0,55,112,0.06)]",
         className,
       )}
       {...props}
@@ -76,7 +76,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full bg-[var(--color-surface-strong)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-ink)]",
+        "inline-flex items-center rounded-full bg-[var(--color-primary-subtle)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-primary-deep)]",
         className,
       )}
     >
@@ -102,7 +102,7 @@ export function Label({
 }
 
 const fieldBase =
-  "w-full rounded-lg bg-white border border-[var(--color-hairline-strong)] px-4 py-2.5 text-[15px] text-[var(--color-ink)] placeholder:text-[var(--color-muted-soft)] outline-none focus:border-[var(--color-ink)] focus:ring-1 focus:ring-[var(--color-ink)] transition";
+  "w-full rounded-md bg-white border border-[var(--color-hairline-input,#a8c3de)] px-3 py-2.5 text-[15px] text-[var(--color-ink)] placeholder:text-[var(--color-muted-soft)] outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition";
 
 export function Input({
   className,
@@ -133,7 +133,7 @@ export function Select({
 /* ─── Section heading ─── */
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[12px] font-semibold uppercase tracking-[0.096em] text-[var(--color-muted)]">
+    <span className="text-[12px] font-semibold uppercase tracking-[0.096em] text-[var(--color-primary-deep)]">
       {children}
     </span>
   );
