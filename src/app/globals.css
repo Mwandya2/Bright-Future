@@ -77,6 +77,34 @@ body {
   .reveal { opacity: 1 !important; transform: none !important; }
 }
 
+/* Pointer cursor on all interactive elements. */
+button:not(:disabled),
+a[href],
+select,
+[role="button"],
+label:has(> input[type="checkbox"]),
+summary {
+  cursor: pointer;
+}
+button:disabled { cursor: not-allowed; }
+
+/* Tinted dashboard background so it never reads as plain white. */
+.dash-bg {
+  background:
+    radial-gradient(900px 460px at 100% -8%, color-mix(in srgb, var(--color-sky) 26%, transparent), transparent 62%),
+    radial-gradient(820px 460px at -6% 108%, color-mix(in srgb, var(--color-mint) 24%, transparent), transparent 60%),
+    radial-gradient(700px 500px at 55% 120%, color-mix(in srgb, var(--color-lavender) 18%, transparent), transparent 60%),
+    var(--color-canvas);
+  background-attachment: fixed;
+}
+
+/* Soft gradient accent chips for stat cards. */
+.chip-mint { background: linear-gradient(135deg, var(--color-mint), var(--color-sky)); }
+.chip-peach { background: linear-gradient(135deg, var(--color-peach), var(--color-rose)); }
+.chip-lavender { background: linear-gradient(135deg, var(--color-lavender), var(--color-sky)); }
+.chip-sky { background: linear-gradient(135deg, var(--color-sky), var(--color-mint)); }
+.chip-rose { background: linear-gradient(135deg, var(--color-rose), var(--color-peach)); }
+
 .section {
   padding-block: 96px;
 }

@@ -26,10 +26,10 @@ export default async function AdminHome() {
     .limit(5);
 
   const stats = [
-    { label: "Total users", value: users.count ?? 0 },
-    { label: "Courses", value: courses.count ?? 0 },
-    { label: "Lab bookings", value: bookings.count ?? 0 },
-    { label: "Print orders", value: orders.count ?? 0 },
+    { label: "Total users", value: users.count ?? 0, icon: "◉", chip: "chip-mint" },
+    { label: "Courses", value: courses.count ?? 0, icon: "▦", chip: "chip-sky" },
+    { label: "Lab bookings", value: bookings.count ?? 0, icon: "▤", chip: "chip-lavender" },
+    { label: "Print orders", value: orders.count ?? 0, icon: "◨", chip: "chip-peach" },
   ];
 
   return (
@@ -41,9 +41,17 @@ export default async function AdminHome() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label} className="p-6">
-            <div className="font-display text-4xl">{s.value}</div>
-            <div className="mt-1 text-[14px] text-[var(--color-muted)]">{s.label}</div>
+          <Card key={s.label} className="relative overflow-hidden p-6">
+            <div className={`absolute inset-x-0 top-0 h-1 ${s.chip}`} />
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="font-display text-4xl">{s.value}</div>
+                <div className="mt-1 text-[14px] text-[var(--color-muted)]">{s.label}</div>
+              </div>
+              <span className={`grid h-10 w-10 place-items-center rounded-xl ${s.chip} text-[16px] text-[var(--color-ink)]`}>
+                {s.icon}
+              </span>
+            </div>
           </Card>
         ))}
       </div>
