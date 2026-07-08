@@ -92,7 +92,11 @@ export default function Home() {
           <div className="mesh-hero" />
           <div className="container-edge relative z-10 flex flex-col items-center py-28 text-center md:py-36">
             <div data-hero><Badge>ICT · Digital Services · Innovation</Badge></div>
-            <h1 data-hero className="font-display mt-6 max-w-4xl text-5xl leading-[1.05] tracking-tight md:text-7xl">
+            <h1
+              data-hero
+              className="font-display mt-6 max-w-4xl text-5xl leading-[1.05] tracking-tight md:text-7xl"
+              style={{ fontWeight: 800 }}
+            >
               Empowering digital futures for the next generation
             </h1>
             <p data-hero className="mt-6 max-w-2xl text-lg text-[var(--color-body)] md:text-xl">
