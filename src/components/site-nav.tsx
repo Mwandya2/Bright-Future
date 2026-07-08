@@ -45,15 +45,11 @@ export async function SiteNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-hairline)] bg-[var(--color-canvas)]/85 backdrop-blur">
       <nav className="container-edge flex h-16 items-center justify-between">
-        <BrandLogo href="/" size={34} />
+        <BrandLogo href="/" size={34} gradient />
 
         <div className="hidden items-center gap-7 md:flex">
           {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="text-[15px] font-medium text-[var(--color-body-strong)] hover:text-[var(--color-ink)]"
-            >
+            <Link key={l.href} href={l.href} className="nav-link text-[15px] font-medium">
               {l.label}
             </Link>
           ))}

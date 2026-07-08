@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { SplashScreen } from "@/components/splash-screen";
+// Splash screen disabled — re-enable by uncommenting this import and the
+// <SplashScreen /> usage in the body below.
+// import { SplashScreen } from "@/components/splash-screen";
 import "./globals.css";
 
 const inter = Inter({
@@ -41,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-full antialiased">
-        <SplashScreen />
+        {/* <SplashScreen /> */}
         {children}
       </body>
     </html>

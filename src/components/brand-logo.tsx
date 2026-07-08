@@ -11,13 +11,19 @@ export function BrandLogo({
   size = 32,
   textClass = "",
   wordmarkSize = "text-[19px]",
+  gradient = false,
 }: {
   href?: string | null;
   wordmark?: boolean;
   size?: number;
   textClass?: string;
   wordmarkSize?: string;
+  gradient?: boolean;
 }) {
+  const wordmarkColor = gradient
+    ? "brand-wordmark-gradient"
+    : "text-[var(--color-ink)]";
+
   const inner = (
     <span className="flex items-center gap-2">
       <Image
@@ -30,7 +36,7 @@ export function BrandLogo({
         style={{ width: size, height: size }}
       />
       {wordmark && (
-        <span className={`font-semibold tracking-tight text-[var(--color-ink)] ${wordmarkSize} ${textClass}`}>
+        <span className={`font-semibold tracking-tight ${wordmarkColor} ${wordmarkSize} ${textClass}`}>
           Bright&nbsp;Future
         </span>
       )}
