@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ButtonLink, Card, Badge, SectionLabel } from "@/components/ui";
@@ -230,8 +231,8 @@ export default function Home() {
                   </p>
                   <ul className="mt-6 space-y-3">
                     {p.features.map((f) => (
-                      <li key={f} className={p.featured ? "flex gap-2 text-[15px] text-white/90" : "flex gap-2 text-[15px] text-[var(--color-body)]"}>
-                        <span className={p.featured ? "text-[var(--color-mint)]" : "text-[var(--color-success)]"}>✓</span>
+                      <li key={f} className={p.featured ? "flex items-start gap-2 text-[15px] text-white/90" : "flex items-start gap-2 text-[15px] text-[var(--color-body)]"}>
+                        <Check className={`mt-0.5 h-4 w-4 shrink-0 ${p.featured ? "text-[var(--color-mint)]" : "text-[var(--color-primary)]"}`} />
                         {f}
                       </li>
                     ))}

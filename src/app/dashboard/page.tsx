@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BookOpen, MonitorSmartphone, Printer } from "lucide-react";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, ButtonLink } from "@/components/ui";
@@ -87,13 +88,13 @@ export default async function DashboardHome() {
           <h2 className="text-[18px] font-medium text-[var(--color-ink)]">Quick actions</h2>
           <div className="mt-4 grid gap-3">
             <ButtonLink href="/courses" variant="outline" className="w-full justify-start">
-              ▦ Browse courses
+              <BookOpen className="h-4 w-4" /> Browse courses
             </ButtonLink>
             <ButtonLink href="/dashboard/bookings" variant="outline" className="w-full justify-start">
-              ▤ Book the computer lab
+              <MonitorSmartphone className="h-4 w-4" /> Book the computer lab
             </ButtonLink>
             <ButtonLink href="/dashboard/printing" variant="outline" className="w-full justify-start">
-              ◨ Request digital printing
+              <Printer className="h-4 w-4" /> Request digital printing
             </ButtonLink>
           </div>
         </Card>

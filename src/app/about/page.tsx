@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { GsapReveal } from "@/components/gsap-reveal";
@@ -67,7 +68,7 @@ export default function AboutPage() {
             <ul className="mt-10 grid gap-3 sm:grid-cols-2">
               {positioning.map((p) => (
                 <li key={p} className="reveal flex items-center gap-3 rounded-xl border border-white/10 bg-[var(--color-surface-dark-elevated)] p-5 text-[16px] text-white">
-                  <span className="text-[var(--color-mint)]">◆</span>
+                  <Check className="h-5 w-5 shrink-0 text-[var(--color-mint)]" />
                   {p}
                 </li>
               ))}

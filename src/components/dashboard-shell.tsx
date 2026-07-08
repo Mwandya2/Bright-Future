@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Menu } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/components/ui";
 import { BrandLogo } from "@/components/brand-logo";
 
-export type NavItem = { href: string; label: string; icon: string };
+export type NavItem = { href: string; label: string; icon: React.ReactNode };
 
 function isActivePath(pathname: string, href: string) {
   return (
@@ -59,8 +60,10 @@ function SidebarBody({
             >
               <span
                 className={cn(
-                  "grid h-6 w-6 place-items-center rounded-md text-[13px]",
-                  active ? "bg-[var(--color-ink)] text-white" : "bg-white/10",
+                  "grid h-7 w-7 place-items-center rounded-md [&_svg]:h-[17px] [&_svg]:w-[17px]",
+                  active
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-white/10 text-white/80",
                 )}
               >
                 {item.icon}
@@ -143,7 +146,7 @@ export function DashboardShell({
               aria-label="Open menu"
               className="grid h-9 w-9 place-items-center rounded-lg border border-[var(--color-hairline-strong)] bg-white text-[var(--color-ink)] md:hidden"
             >
-              <span className="text-[16px] leading-none">☰</span>
+              <Menu className="h-[18px] w-[18px]" />
             </button>
             <span className="md:hidden">
               <BrandLogo href="/" size={28} wordmarkSize="text-[16px]" />

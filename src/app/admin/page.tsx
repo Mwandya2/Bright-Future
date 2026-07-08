@@ -1,3 +1,4 @@
+import { Users, BookOpen, MonitorSmartphone, Printer } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Card } from "@/components/ui";
 
@@ -26,10 +27,10 @@ export default async function AdminHome() {
     .limit(5);
 
   const stats = [
-    { label: "Total users", value: users.count ?? 0, icon: "◉", chip: "chip-mint" },
-    { label: "Courses", value: courses.count ?? 0, icon: "▦", chip: "chip-sky" },
-    { label: "Lab bookings", value: bookings.count ?? 0, icon: "▤", chip: "chip-lavender" },
-    { label: "Print orders", value: orders.count ?? 0, icon: "◨", chip: "chip-peach" },
+    { label: "Total users", value: users.count ?? 0, icon: <Users />, chip: "chip-mint" },
+    { label: "Courses", value: courses.count ?? 0, icon: <BookOpen />, chip: "chip-sky" },
+    { label: "Lab bookings", value: bookings.count ?? 0, icon: <MonitorSmartphone />, chip: "chip-lavender" },
+    { label: "Print orders", value: orders.count ?? 0, icon: <Printer />, chip: "chip-peach" },
   ];
 
   return (
@@ -48,7 +49,7 @@ export default async function AdminHome() {
                 <div className="font-display tnum text-4xl">{s.value}</div>
                 <div className="mt-1 text-[14px] text-[var(--color-muted)]">{s.label}</div>
               </div>
-              <span className={`grid h-10 w-10 place-items-center rounded-xl ${s.chip} text-[16px] text-[var(--color-ink)]`}>
+              <span className={`grid h-10 w-10 place-items-center rounded-xl ${s.chip} text-[var(--color-ink)] [&_svg]:h-5 [&_svg]:w-5`}>
                 {s.icon}
               </span>
             </div>
