@@ -52,11 +52,13 @@ export function SplashScreen() {
       className={`fixed inset-0 z-[9999] overflow-hidden transition-opacity duration-500 ease-out ${
         fading ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
-      // Fallback tone (the video's own grey) shows only until the frame paints.
-      style={{ backgroundColor: "#e9e9e9" }}
+      // Match the video's own edge grey (#e0e0e0) so the thin letterbox bars
+      // blend into the video — no visible rectangular border on any screen.
+      style={{ backgroundColor: "#e2e2e2" }}
     >
-      {/* The video fills the whole screen, so its grey background IS the splash
-          background — no surrounding area, so no rectangular border. */}
+      {/* object-contain keeps the whole logo visible on every aspect ratio
+          (never cropped); the background matches the video edge so the small
+          letterbox area is invisible. */}
       <video
         ref={videoRef}
         src="/splash.mp4"
@@ -64,7 +66,7 @@ export function SplashScreen() {
         autoPlay
         playsInline
         preload="auto"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-contain"
       />
     </div>
   );
