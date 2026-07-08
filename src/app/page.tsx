@@ -114,7 +114,7 @@ export default function Home() {
                 ["24/7", "Lab & support"],
               ].map(([n, l]) => (
                 <div key={l}>
-                  <div className="font-display text-3xl md:text-4xl">{n}</div>
+                  <div className="font-display tnum text-3xl md:text-4xl">{n}</div>
                   <div className="mt-1 text-[13px] text-[var(--color-muted)]">{l}</div>
                 </div>
               ))}
@@ -222,7 +222,7 @@ export default function Home() {
                   <h3 className={p.featured ? "text-lg font-medium text-white" : "text-lg font-medium text-[var(--color-ink)]"}>
                     {p.name}
                   </h3>
-                  <div className="font-display mt-4 text-4xl" style={p.featured ? { color: "#fff" } : undefined}>
+                  <div className="font-display tnum mt-4 text-4xl" style={p.featured ? { color: "#fff" } : undefined}>
                     {p.price}
                   </div>
                   <p className={p.featured ? "mt-1 text-[14px] text-[var(--color-on-dark-soft)]" : "mt-1 text-[14px] text-[var(--color-muted)]"}>
@@ -249,8 +249,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA band */}
-        <section className="section border-t border-[var(--color-hairline)] bg-[var(--color-canvas-soft)]">
+        {/* CTA band — Stripe warm cream interlude */}
+        <section className="section border-t border-[var(--color-hairline)] bg-[var(--color-canvas-cream)]">
           <div className="container-edge text-center">
             <h2 className="font-display mx-auto max-w-2xl text-3xl md:text-5xl">
               Learn. Connect. Grow.

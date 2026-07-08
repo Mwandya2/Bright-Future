@@ -7,8 +7,9 @@ export function cn(...parts: (string | false | null | undefined)[]) {
 
 /* ─── Button ─── */
 type ButtonVariant = "primary" | "outline" | "ghost" | "dark";
+// Stripe: tight pill, 8px 16px padding, button-md (16px / 400).
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium text-[15px] leading-none transition-colors disabled:opacity-50 disabled:pointer-events-none px-5 h-10 cursor-pointer";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium text-[15px] leading-none transition-colors disabled:opacity-50 disabled:pointer-events-none px-4 h-9 cursor-pointer";
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
     "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-active)]",
@@ -57,7 +58,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-[12px] bg-white border border-[var(--color-hairline)] shadow-[0_1px_3px_rgba(0,55,112,0.06)]",
+        "rounded-[12px] bg-white border border-[var(--color-hairline)] shadow-[0_1px_3px_rgba(0,55,112,0.08)]",
         className,
       )}
       {...props}

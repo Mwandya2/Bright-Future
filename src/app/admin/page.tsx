@@ -45,7 +45,7 @@ export default async function AdminHome() {
             <div className={`absolute inset-x-0 top-0 h-1 ${s.chip}`} />
             <div className="flex items-start justify-between">
               <div>
-                <div className="font-display text-4xl">{s.value}</div>
+                <div className="font-display tnum text-4xl">{s.value}</div>
                 <div className="mt-1 text-[14px] text-[var(--color-muted)]">{s.label}</div>
               </div>
               <span className={`grid h-10 w-10 place-items-center rounded-xl ${s.chip} text-[16px] text-[var(--color-ink)]`}>
@@ -61,7 +61,7 @@ export default async function AdminHome() {
           <div className="text-[13px] uppercase tracking-[0.08em] text-[var(--color-on-dark-soft)]">
             Estimated printing revenue
           </div>
-          <div className="font-display mt-3 text-4xl text-white">
+          <div className="font-display tnum mt-3 text-4xl text-white">
             TZS {revenue.toLocaleString()}
           </div>
           <p className="mt-2 text-[13px] text-[var(--color-on-dark-soft)]">
