@@ -34,17 +34,20 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isProtected = path.startsWith("/dashboard") || path.startsWith("/admin");
+  // Precise match so /admin-login (the public admin entrance) is NOT guarded.
+  const isAdminRoute = path === "/admin" || path.startsWith("/admin/");
+  const isProtected = path.startsWith("/dashboard") || isAdminRoute;
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirect", path);
+    // Admin routes send you to the separate admin door; users to /login.
+    url.pathname = isAdminRoute ? "/admin-login" : "/login";
+    if (!isAdminRoute) url.searchParams.set("redirect", path);
     return NextResponse.redirect(url);
   }
 
-  // Admin gate: check profile role for /admin.
-  if (user && path.startsWith("/admin")) {
+  // Admin gate: only role=admin may enter the admin dashboard.
+  if (user && isAdminRoute) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")

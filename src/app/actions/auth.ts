@@ -71,6 +71,41 @@ export async function login(
   redirect(redirectTo || "/dashboard");
 }
 
+/**
+ * Dedicated admin sign-in. Authenticates, then verifies the account is an
+ * administrator. Non-admins are signed straight back out — the admin door
+ * never grants a regular-user session.
+ */
+export async function adminLogin(
+  _prev: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) return { error: error.message };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    await supabase.auth.signOut();
+    return { error: "This account is not an administrator." };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/admin");
+}
+
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
