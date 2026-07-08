@@ -30,7 +30,7 @@ export function BrandLogo({
         style={{ width: size, height: size }}
       />
       {wordmark && (
-        <span className={`font-display ${wordmarkSize} tracking-tight ${textClass}`}>
+        <span className={`font-semibold tracking-tight text-[var(--color-ink)] ${wordmarkSize} ${textClass}`}>
           Bright&nbsp;Future
         </span>
       )}

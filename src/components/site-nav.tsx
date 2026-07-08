@@ -2,6 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ButtonLink } from "@/components/ui";
 import { BrandLogo } from "@/components/brand-logo";
+import { AccountMenu } from "@/components/account-menu";
+import { isTheAdmin } from "@/lib/admin";
 
 const links = [
   { href: "/courses", label: "Courses" },
@@ -17,10 +19,28 @@ export async function SiteNav() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const meta = user?.user_metadata as { full_name?: string } | undefined;
-  const display = meta?.full_name || user?.email || "";
-  const firstName = (display.split(" ")[0] || "Account").split("@")[0];
-  const initial = (firstName[0] || "A").toUpperCase();
+  type NavProfile = {
+    full_name: string | null;
+    avatar_url: string | null;
+    role: string | null;
+  };
+  let profile: NavProfile | null = null;
+
+  if (user) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url, role")
+      .eq("id", user.id)
+      .single();
+    profile = (data as NavProfile) ?? null;
+  }
+
+  const displayName =
+    profile?.full_name ||
+    (user?.user_metadata as { full_name?: string } | undefined)?.full_name ||
+    user?.email ||
+    "";
+  const isAdmin = isTheAdmin(user?.email, profile?.role);
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-hairline)] bg-[var(--color-canvas)]/85 backdrop-blur">
@@ -39,26 +59,21 @@ export async function SiteNav() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {user ? (
             <>
               <Link
                 href="/dashboard/courses"
-                className="hidden px-2 text-[15px] font-medium text-[var(--color-body-strong)] hover:text-[var(--color-ink)] sm:block"
+                className="hidden px-1 text-[15px] font-medium text-[var(--color-body-strong)] hover:text-[var(--color-ink)] sm:block"
               >
                 My Courses
               </Link>
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 rounded-full border border-[var(--color-hairline-strong)] bg-white py-1 pl-1 pr-3 transition hover:bg-[var(--color-surface-strong)]"
-              >
-                <span className="chip-mint grid h-7 w-7 place-items-center rounded-full text-[13px] font-semibold text-[var(--color-ink)]">
-                  {initial}
-                </span>
-                <span className="max-w-[8rem] truncate text-[14px] font-medium text-[var(--color-ink)]">
-                  {firstName}
-                </span>
-              </Link>
+              <AccountMenu
+                name={displayName}
+                email={user.email ?? ""}
+                avatarUrl={profile?.avatar_url ?? null}
+                isAdmin={isAdmin}
+              />
             </>
           ) : (
             <>
