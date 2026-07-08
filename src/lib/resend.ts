@@ -1,6 +1,15 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazily construct the Resend client. Constructing at module load throws
+// "Missing API key" when RESEND_API_KEY is absent (e.g. during `next build`
+// on an environment without the var set), which would fail the whole build.
+let _resend: Resend | null = null;
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  if (!_resend) _resend = new Resend(key);
+  return _resend;
+}
 
 const FROM = process.env.RESEND_FROM_EMAIL || "Bright Future <onboarding@resend.dev>";
 
@@ -10,6 +19,11 @@ const FROM = process.env.RESEND_FROM_EMAIL || "Bright Future <onboarding@resend.
  * additional friendly confirmation from the Bright Future brand.
  */
 export async function sendWelcomeEmail(to: string, name: string) {
+  const resend = getResend();
+  if (!resend) {
+    console.warn("[resend] RESEND_API_KEY not set — skipping welcome email.");
+    return;
+  }
   try {
     await resend.emails.send({
       from: FROM,
@@ -28,6 +42,11 @@ export async function sendBookingConfirmation(
   name: string,
   details: { service: string; date: string; time: string },
 ) {
+  const resend = getResend();
+  if (!resend) {
+    console.warn("[resend] RESEND_API_KEY not set — skipping booking email.");
+    return;
+  }
   try {
     await resend.emails.send({
       from: FROM,
