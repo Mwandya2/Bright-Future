@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 
 const cols = [
   {
@@ -35,12 +36,7 @@ export function SiteFooter() {
     <footer className="border-t border-[var(--color-hairline)] bg-[var(--color-canvas)]">
       <div className="container-edge grid gap-10 py-16 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--color-ink)] text-white text-sm font-semibold">
-              B
-            </span>
-            <span className="font-display text-[19px]">Bright Future</span>
-          </div>
+          <BrandLogo href={null} size={34} />
           <p className="mt-4 max-w-xs text-[15px] text-[var(--color-body)]">
             A complete digital empowerment ecosystem for education,
             entrepreneurship, and innovation.

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ButtonLink } from "@/components/ui";
+import { BrandLogo } from "@/components/brand-logo";
 
 const links = [
   { href: "/courses", label: "Courses" },
@@ -19,14 +20,7 @@ export async function SiteNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-hairline)] bg-[var(--color-canvas)]/85 backdrop-blur">
       <nav className="container-edge flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--color-ink)] text-white text-sm font-semibold">
-            B
-          </span>
-          <span className="font-display text-[19px] tracking-tight">
-            Bright&nbsp;Future
-          </span>
-        </Link>
+        <BrandLogo href="/" size={34} />
 
         <div className="hidden items-center gap-7 md:flex">
           {links.map((l) => (

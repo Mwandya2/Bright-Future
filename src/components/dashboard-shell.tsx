@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth";
 import { cn } from "@/components/ui";
+import { BrandLogo } from "@/components/brand-logo";
 
 export type NavItem = { href: string; label: string; icon: string };
 
@@ -26,11 +27,8 @@ export function DashboardShell({
     <div className="flex min-h-screen bg-[var(--color-canvas)]">
       {/* Sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-[var(--color-hairline)] bg-[var(--color-canvas-soft)] md:flex">
-        <div className="flex h-16 items-center gap-2 border-b border-[var(--color-hairline)] px-6">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--color-ink)] text-white text-sm font-semibold">
-            B
-          </span>
-          <span className="font-display text-[18px]">Bright Future</span>
+        <div className="flex h-16 items-center border-b border-[var(--color-hairline)] px-6">
+          <BrandLogo href="/" size={32} wordmarkSize="text-[18px]" />
         </div>
         <div className="px-4 pt-4">
           <span className="inline-flex items-center rounded-full bg-[var(--color-surface-strong)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]">
@@ -77,11 +75,8 @@ export function DashboardShell({
       {/* Main */}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 items-center justify-between border-b border-[var(--color-hairline)] bg-[var(--color-canvas)] px-5 md:px-8">
-          <div className="flex items-center gap-3 md:hidden">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--color-ink)] text-white text-sm font-semibold">
-              B
-            </span>
-            <span className="font-display text-[17px]">Bright Future</span>
+          <div className="flex items-center md:hidden">
+            <BrandLogo href="/" size={30} wordmarkSize="text-[17px]" />
           </div>
           <div className="hidden md:block" />
           <div className="flex items-center gap-3">

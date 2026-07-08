@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { adminLogin, type AuthState } from "@/app/actions/auth";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default function AdminLoginPage() {
   const [state, action, pending] = useActionState<AuthState, FormData>(
@@ -16,11 +17,8 @@ export default function AdminLoginPage() {
       <div className="orb orb-sky" style={{ width: 320, height: 320, bottom: -120, right: -60, opacity: 0.25 }} />
 
       <div className="relative z-10 w-full max-w-sm">
-        <div className="mb-8 flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-white text-[var(--color-ink)] text-sm font-semibold">
-            B
-          </span>
-          <span className="font-display text-[20px] text-white">Bright Future</span>
+        <div className="mb-8">
+          <BrandLogo href="/" size={36} wordmarkSize="text-[20px]" textClass="text-white" />
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-[var(--color-surface-dark-elevated)] p-8">
