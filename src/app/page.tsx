@@ -218,11 +218,8 @@ export default function Home() {
               {pricing.map((p) => (
                 <Card
                   key={p.name}
-                  className={
-                    p.featured
-                      ? "reveal border-0 bg-[var(--color-surface-dark)] p-8 text-white"
-                      : "reveal p-8"
-                  }
+                  className={p.featured ? "reveal border-0 p-8 text-white" : "reveal p-8"}
+                  style={p.featured ? { backgroundColor: "var(--color-surface-dark)" } : undefined}
                 >
                   <h3 className={p.featured ? "text-lg font-medium text-white" : "text-lg font-medium text-[var(--color-ink)]"}>
                     {p.name}
