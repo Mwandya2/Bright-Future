@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const SPLASH_MS = 7000; // splash lasts at most 7 seconds
+const CLIP_SECONDS = 8; // source clip length
+
 /**
  * Full-screen white splash that plays the BFT logo video centered, once per
- * browser session, then fades out to reveal the app. The video is muted and
- * has no audio track. Rendered in the initial HTML (visible by default) so
- * there's no flash of page content before it appears.
+ * browser session, then fades out to reveal the app. The clip is sped up so it
+ * completes within SPLASH_MS, and a hard timer guarantees it never hangs.
  */
 export function SplashScreen() {
   const [visible, setVisible] = useState(true);
@@ -14,7 +16,6 @@ export function SplashScreen() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Only show once per session.
     if (sessionStorage.getItem("bft_splash_seen")) {
       setVisible(false);
       return;
@@ -25,17 +26,22 @@ export function SplashScreen() {
       if (done) return;
       done = true;
       sessionStorage.setItem("bft_splash_seen", "1");
-      setFading(true);
-      setTimeout(() => setVisible(false), 600);
+      setFading(true); // start the fade
+      setTimeout(() => setVisible(false), 500); // unmount after the fade
     };
 
-    const fallback = setTimeout(finish, 9000); // safety if 'ended' never fires
     const v = videoRef.current;
     if (v) {
-      v.play().catch(() => {}); // some browsers need an explicit play()
-      v.onended = finish;
+      // Speed the clip up so its animation finishes right at the 7s mark.
+      v.playbackRate = CLIP_SECONDS / (SPLASH_MS / 1000);
+      v.play().catch(() => {}); // muted autoplay; ignore rejection
+      v.onended = finish; // dismiss as soon as it finishes
+      v.onerror = finish; // never get stuck if the video can't load
     }
-    return () => clearTimeout(fallback);
+
+    // Hard cap: the splash is gone by 7s no matter what.
+    const cap = setTimeout(finish, SPLASH_MS);
+    return () => clearTimeout(cap);
   }, []);
 
   if (!visible) return null;
@@ -43,8 +49,9 @@ export function SplashScreen() {
   return (
     <div
       aria-hidden
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-white transition-opacity duration-500"
-      style={{ opacity: fading ? 0 : 1 }}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-white transition-opacity duration-500 ease-out ${
+        fading ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
     >
       <video
         ref={videoRef}
