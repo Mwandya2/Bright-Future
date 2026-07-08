@@ -8,7 +8,7 @@ const cols = [
       ["Courses", "/courses"],
       ["Lab Booking", "/dashboard/bookings"],
       ["Digital Printing", "/dashboard/printing"],
-      ["Dashboard", "/dashboard"],
+      ["My Account", "/dashboard"],
     ],
   },
   {

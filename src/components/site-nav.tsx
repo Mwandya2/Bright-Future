@@ -17,6 +17,11 @@ export async function SiteNav() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const meta = user?.user_metadata as { full_name?: string } | undefined;
+  const display = meta?.full_name || user?.email || "";
+  const firstName = (display.split(" ")[0] || "Account").split("@")[0];
+  const initial = (firstName[0] || "A").toUpperCase();
+
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-hairline)] bg-[var(--color-canvas)]/85 backdrop-blur">
       <nav className="container-edge flex h-16 items-center justify-between">
@@ -36,9 +41,25 @@ export async function SiteNav() {
 
         <div className="flex items-center gap-2">
           {user ? (
-            <ButtonLink href="/dashboard" variant="primary">
-              Dashboard
-            </ButtonLink>
+            <>
+              <Link
+                href="/dashboard/courses"
+                className="hidden px-2 text-[15px] font-medium text-[var(--color-body-strong)] hover:text-[var(--color-ink)] sm:block"
+              >
+                My Courses
+              </Link>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 rounded-full border border-[var(--color-hairline-strong)] bg-white py-1 pl-1 pr-3 transition hover:bg-[var(--color-surface-strong)]"
+              >
+                <span className="chip-mint grid h-7 w-7 place-items-center rounded-full text-[13px] font-semibold text-[var(--color-ink)]">
+                  {initial}
+                </span>
+                <span className="max-w-[8rem] truncate text-[14px] font-medium text-[var(--color-ink)]">
+                  {firstName}
+                </span>
+              </Link>
+            </>
           ) : (
             <>
               <Link

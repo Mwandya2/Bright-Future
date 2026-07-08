@@ -3,7 +3,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, ButtonLink } from "@/components/ui";
 
-export const metadata = { title: "Dashboard" };
+export const metadata = { title: "My Account" };
 
 export default async function DashboardHome() {
   const { user, profile } = await requireProfile();
