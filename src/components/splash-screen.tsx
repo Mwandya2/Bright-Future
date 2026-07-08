@@ -46,19 +46,17 @@ export function SplashScreen() {
 
   if (!visible) return null;
 
-  // Splash background mimics the video's grey vignette (light centre → grey
-  // edges), so the video's rectangle blends in instead of showing a hard box.
-  const bg =
-    "radial-gradient(circle at 50% 47%, #f2f2f2 0%, #e6e6e6 24%, #d2d2d2 58%, #bfbfbf 100%)";
-
   return (
     <div
       aria-hidden
-      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-500 ease-out ${
+      className={`fixed inset-0 z-[9999] overflow-hidden transition-opacity duration-500 ease-out ${
         fading ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
-      style={{ background: bg }}
+      // Fallback tone (the video's own grey) shows only until the frame paints.
+      style={{ backgroundColor: "#e9e9e9" }}
     >
+      {/* The video fills the whole screen, so its grey background IS the splash
+          background — no surrounding area, so no rectangular border. */}
       <video
         ref={videoRef}
         src="/splash.mp4"
@@ -66,15 +64,7 @@ export function SplashScreen() {
         autoPlay
         playsInline
         preload="auto"
-        className="h-auto w-[min(82vw,520px)]"
-        style={{
-          // Feather the video's edges into the matching background so no
-          // rectangular border is visible.
-          WebkitMaskImage:
-            "radial-gradient(ellipse 92% 92% at 50% 50%, #000 62%, transparent 100%)",
-          maskImage:
-            "radial-gradient(ellipse 92% 92% at 50% 50%, #000 62%, transparent 100%)",
-        }}
+        className="absolute inset-0 h-full w-full object-cover"
       />
     </div>
   );
