@@ -2,14 +2,16 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { Card } from "@/components/ui";
 import { StatusSelect } from "@/components/status-select";
 import { setUserRole } from "@/app/actions/admin";
+import { ADMIN_EMAIL } from "@/lib/admin";
 import type { Profile } from "@/lib/types";
 
 export const metadata = { title: "Users" };
 
+// Single-admin lock: "admin" is intentionally NOT selectable — only the one
+// designated admin account (by email) can ever be admin.
 const ROLES = [
   { value: "student", label: "Student" },
   { value: "instructor", label: "Instructor" },
-  { value: "admin", label: "Admin" },
 ];
 
 export default async function AdminUsersPage() {
@@ -49,10 +51,16 @@ export default async function AdminUsersPage() {
                     {new Date(u.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-5 py-3">
-                    <form action={setUserRole}>
-                      <input type="hidden" name="id" value={u.id} />
-                      <StatusSelect name="role" defaultValue={u.role} options={ROLES} />
-                    </form>
+                    {u.email?.toLowerCase() === ADMIN_EMAIL ? (
+                      <span className="inline-flex items-center rounded-full bg-[var(--color-ink)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-white">
+                        Admin · locked
+                      </span>
+                    ) : (
+                      <form action={setUserRole}>
+                        <input type="hidden" name="id" value={u.id} />
+                        <StatusSelect name="role" defaultValue={u.role} options={ROLES} />
+                      </form>
+                    )}
                   </td>
                 </tr>
               ))}

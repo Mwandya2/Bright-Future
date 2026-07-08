@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireProfile } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ADMIN_EMAIL } from "@/lib/admin";
 
 async function assertAdmin() {
   await requireProfile({ admin: true });
@@ -82,9 +83,18 @@ export async function updateOrderStatus(formData: FormData) {
 
 export async function setUserRole(formData: FormData) {
   const supabase = await assertAdmin();
-  await supabase
+  const id = String(formData.get("id"));
+  const role = String(formData.get("role"));
+  // Single-admin lock: nobody can be promoted to admin through the UI…
+  if (role === "admin") return;
+  // …and the designated admin's own role can't be changed away (lockout guard).
+  const { data: target } = await supabase
     .from("profiles")
-    .update({ role: String(formData.get("role")) })
-    .eq("id", String(formData.get("id")));
+    .select("email")
+    .eq("id", id)
+    .single();
+  if (target?.email && target.email.toLowerCase() === ADMIN_EMAIL) return;
+
+  await supabase.from("profiles").update({ role }).eq("id", id);
   revalidatePath("/admin/users");
 }

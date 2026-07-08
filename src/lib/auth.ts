@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isTheAdmin } from "@/lib/admin";
 import type { Profile } from "@/lib/types";
 
 /**
@@ -35,7 +36,7 @@ export async function requireProfile(opts?: { admin?: boolean }): Promise<{
       created_at: new Date().toISOString(),
     } satisfies Profile);
 
-  if (opts?.admin && resolved.role !== "admin") redirect("/dashboard");
+  if (opts?.admin && !isTheAdmin(user.email, resolved.role)) redirect("/dashboard");
 
   return { user: { id: user.id, email: user.email }, profile: resolved };
 }

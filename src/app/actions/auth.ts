@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { sendWelcomeEmail } from "@/lib/resend";
+import { isTheAdmin } from "@/lib/admin";
 
 async function origin() {
   const h = await headers();
@@ -97,7 +98,7 @@ export async function adminLogin(
     .eq("id", data.user.id)
     .single();
 
-  if (profile?.role !== "admin") {
+  if (!isTheAdmin(data.user.email, profile?.role)) {
     await supabase.auth.signOut();
     return { error: "This account is not an administrator." };
   }
