@@ -98,10 +98,12 @@ export default function Home() {
             <div data-hero><Badge>ICT · Digital Services · Innovation</Badge></div>
             <h1
               data-hero
-              className="font-display mt-6 max-w-4xl text-5xl leading-[1.05] tracking-tight md:text-7xl"
-              style={{ fontWeight: 800 }}
+              className="font-display mt-6 max-w-5xl text-4xl leading-[1.1] tracking-tight md:text-6xl"
+              style={{ fontWeight: 700 }}
             >
-              Empowering digital futures for the next generation
+              Empowering digital futures{" "}
+              <br className="hidden md:block" />
+              for the next generation
             </h1>
             <p data-hero className="mt-6 max-w-2xl text-lg text-[var(--color-body)] md:text-xl">
               Bright Future is a complete digital empowerment ecosystem — ICT
