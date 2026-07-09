@@ -35,6 +35,18 @@ export const metadata: Metadata = {
     siteName: "Bright Future",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bright Future Digital Hub",
+    description: "Learn. Connect. Grow. Your gateway to ICT excellence.",
+  },
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
+  // Set GOOGLE_SITE_VERIFICATION in the environment to the code Google gives
+  // you (Search Console → HTML tag method) to auto-verify ownership.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default function RootLayout({

@@ -70,9 +70,24 @@ const pricing = [
   },
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Bright Future Digital Hub",
+  url: "https://brightfuture.best",
+  logo: "https://brightfuture.best/icon.png",
+  description:
+    "A complete digital empowerment ecosystem: ICT training, computer-lab bookings, digital printing, freelance services, and business support.",
+  sameAs: [],
+};
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <GsapReveal />
       <SiteNav />
       <main className="flex-1">
