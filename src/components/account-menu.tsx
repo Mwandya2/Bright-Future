@@ -67,16 +67,19 @@ export function AccountMenu({
           </div>
           <div className="my-1 h-px bg-[var(--color-hairline)]" />
 
-          <MenuLink href="/dashboard" icon={<LayoutGrid className="h-4 w-4" />} onClick={() => setOpen(false)}>
-            My Account
-          </MenuLink>
-          <MenuLink href="/dashboard/courses" icon={<BookOpen className="h-4 w-4" />} onClick={() => setOpen(false)}>
-            My Courses
-          </MenuLink>
-          {isAdmin && (
+          {isAdmin ? (
             <MenuLink href="/admin" icon={<Shield className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Admin Dashboard
             </MenuLink>
+          ) : (
+            <>
+              <MenuLink href="/dashboard" icon={<LayoutGrid className="h-4 w-4" />} onClick={() => setOpen(false)}>
+                My Account
+              </MenuLink>
+              <MenuLink href="/dashboard/courses" icon={<BookOpen className="h-4 w-4" />} onClick={() => setOpen(false)}>
+                My Courses
+              </MenuLink>
+            </>
           )}
 
           <div className="my-1 h-px bg-[var(--color-hairline)]" />

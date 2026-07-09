@@ -58,12 +58,14 @@ export async function SiteNav() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Link
-                href="/dashboard/courses"
-                className="hidden px-1 text-[15px] font-medium text-[var(--color-body-strong)] hover:text-[var(--color-ink)] sm:block"
-              >
-                My Courses
-              </Link>
+              {!isAdmin && (
+                <Link
+                  href="/dashboard/courses"
+                  className="hidden px-1 text-[15px] font-medium text-[var(--color-body-strong)] hover:text-[var(--color-ink)] sm:block"
+                >
+                  My Courses
+                </Link>
+              )}
               <AccountMenu
                 name={displayName}
                 email={user.email ?? ""}

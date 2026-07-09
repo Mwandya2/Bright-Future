@@ -1,11 +1,12 @@
+import { redirect } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
   MonitorSmartphone,
   Printer,
-  Shield,
 } from "lucide-react";
 import { requireProfile } from "@/lib/auth";
+import { isTheAdmin } from "@/lib/admin";
 import { DashboardShell, type NavItem } from "@/components/dashboard-shell";
 
 const items: NavItem[] = [
@@ -20,16 +21,17 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { profile } = await requireProfile();
+  const { user, profile } = await requireProfile();
 
-  const nav = [...items];
-  if (profile.role === "admin") {
-    nav.push({ href: "/admin", label: "Admin Panel", icon: <Shield /> });
+  // The admin is an overseer only — no member actions (enrol, book, order).
+  // Bounce them to the admin dashboard.
+  if (isTheAdmin(user.email, profile.role)) {
+    redirect("/admin");
   }
 
   return (
     <DashboardShell
-      items={nav}
+      items={items}
       name={profile.full_name ?? "Member"}
       role={profile.role}
       badge="My Hub"

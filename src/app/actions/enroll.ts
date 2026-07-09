@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isTheAdmin } from "@/lib/admin";
 
 /**
  * Enrol the CURRENTLY signed-in user into a course. If they're already signed
@@ -19,6 +20,16 @@ export async function enrollSelf(formData: FormData) {
   // Not signed in → go sign in, then come back to the courses page.
   if (!user) {
     redirect("/login?redirect=/courses");
+  }
+
+  // Admin is oversight-only — never enrols; send them to manage the catalogue.
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  if (isTheAdmin(user.email, prof?.role)) {
+    redirect("/admin/courses");
   }
 
   if (courseId) {

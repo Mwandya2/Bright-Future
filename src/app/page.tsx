@@ -4,48 +4,37 @@ import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ButtonLink, Card, Badge, SectionLabel } from "@/components/ui";
 import { GsapReveal } from "@/components/gsap-reveal";
+import { MODULES } from "@/lib/modules";
 
 const services = [
   {
     tag: "Academy",
     title: "ICT Training Academy",
     body: "Structured courses in web development, design, data, networking, and office productivity — with certificates and instructor support.",
-    href: "/courses",
+    href: "/modules/ict-training-academy",
     cover: "cover-mint",
   },
   {
     tag: "Lab",
     title: "Computer Lab & Internet",
     body: "Book computer, gaming, or research workstations. Session tracking and managed internet access built in.",
-    href: "/dashboard/bookings",
+    href: "/modules/computer-lab",
     cover: "cover-sky",
   },
   {
     tag: "Printing",
     title: "Digital Printing & Media",
     body: "Documents, posters, banners, business cards, and photo printing with a smart upload and collection system.",
-    href: "/dashboard/printing",
+    href: "/modules/digital-printing",
     cover: "cover-peach",
   },
   {
     tag: "Freelance",
     title: "Digital Services Marketplace",
     body: "Logo design, websites, social media, video editing, and IT support delivered by vetted local talent.",
-    href: "/#modules",
+    href: "/modules/freelance-marketplace",
     cover: "cover-lavender",
   },
-];
-
-const modules = [
-  ["ICT Training Academy", "Course marketplace, smart learning, certifications"],
-  ["Computer Lab Management", "Smart booking, session tracking, access control"],
-  ["Digital Printing", "Print, posters, banners, cards, photos, delivery"],
-  ["Freelance Marketplace", "Design, web, social, video, branding & IT"],
-  ["Business & Entrepreneurship", "Profiles, storefronts, marketing, accounting"],
-  ["Career & Job Center", "CV builder, internships, job board, mentorship"],
-  ["Events & Tech Community", "Workshops, bootcamps, networking, challenges"],
-  ["E-Commerce Tech Store", "Laptops, accessories, devices, books, licenses"],
-  ["Smart Administration", "Users, payments, analytics, revenue, notifications"],
 ];
 
 const smartFeatures = [
@@ -163,7 +152,7 @@ export default function Home() {
           <div className="container-edge">
             <SectionLabel>The full ecosystem</SectionLabel>
             <h2 className="font-display mt-3 max-w-2xl text-3xl md:text-4xl">
-              Nine modules. One digital platform.
+              Eight modules. One digital platform.
             </h2>
             <p className="mt-4 max-w-2xl text-[var(--color-body)]">
               Bright Future scales from a learning academy into a complete
@@ -171,16 +160,28 @@ export default function Home() {
               innovation.
             </p>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {modules.map(([title, body], i) => (
-                <Card key={title} className="reveal p-6">
-                  <div className="text-[13px] font-semibold text-[var(--color-muted-soft)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
-                  <h3 className="mt-2 text-[17px] font-medium text-[var(--color-ink)]">
-                    {title}
-                  </h3>
-                  <p className="mt-1.5 text-[14px] text-[var(--color-body)]">{body}</p>
-                </Card>
+              {MODULES.map((m, i) => (
+                <Link key={m.slug} href={`/modules/${m.slug}`} className="reveal">
+                  <Card className="group h-full p-6 transition hover:shadow-[0_8px_24px_rgba(0,55,112,0.08)]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[13px] font-semibold text-[var(--color-muted-soft)]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {m.status === "coming-soon" && (
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted-soft)]">
+                          Soon
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-2 text-[17px] font-medium text-[var(--color-ink)] group-hover:text-[var(--color-primary)]">
+                      {m.title}
+                    </h3>
+                    <p className="mt-1.5 text-[14px] text-[var(--color-body)]">{m.summary}</p>
+                    <span className="mt-3 inline-block text-[13px] font-medium text-[var(--color-primary)]">
+                      Explore →
+                    </span>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>

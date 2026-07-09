@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Badge, Card, Button, ButtonLink, SectionLabel } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 import { enrollSelf } from "@/app/actions/enroll";
+import { isTheAdmin } from "@/lib/admin";
 import { CATEGORY_LABELS, type Course } from "@/lib/types";
 
 export const metadata = { title: "Courses" };
@@ -19,6 +20,16 @@ export default async function CoursesPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  let isAdmin = false;
+  if (user) {
+    const { data: prof } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    isAdmin = isTheAdmin(user.email, prof?.role);
+  }
 
   const { data } = await supabase
     .from("courses")
@@ -43,15 +54,26 @@ export default async function CoursesPage() {
               Practical, certificate-backed training across web development,
               design, data, networking, and productivity.
             </p>
-            {user && (
+            {isAdmin ? (
               <p className="mt-4 text-[14px] text-[var(--color-muted)]">
-                Signed in — enrolling adds the course to your account. Enrolling
-                someone else?{" "}
-                <Link href="/signup" className="font-medium text-[var(--color-primary)] underline">
-                  Create a separate account
+                You&apos;re signed in as an administrator — manage the catalogue
+                in the{" "}
+                <Link href="/admin/courses" className="font-medium text-[var(--color-primary)] underline">
+                  admin dashboard
                 </Link>
                 .
               </p>
+            ) : (
+              user && (
+                <p className="mt-4 text-[14px] text-[var(--color-muted)]">
+                  Signed in — enrolling adds the course to your account.
+                  Enrolling someone else?{" "}
+                  <Link href="/signup" className="font-medium text-[var(--color-primary)] underline">
+                    Create a separate account
+                  </Link>
+                  .
+                </p>
+              )
             )}
           </div>
         </section>
@@ -97,7 +119,15 @@ export default async function CoursesPage() {
                           {c.duration_weeks ? `${c.duration_weeks} weeks` : ""}
                         </span>
                       </div>
-                      {user ? (
+                      {isAdmin ? (
+                        <ButtonLink
+                          href="/admin/courses"
+                          variant="outline"
+                          className="mt-5 w-full"
+                        >
+                          Manage in admin
+                        </ButtonLink>
+                      ) : user ? (
                         <form action={enrollSelf} className="mt-5">
                           <input type="hidden" name="course_id" value={c.id} />
                           <Button variant="outline" className="w-full">
