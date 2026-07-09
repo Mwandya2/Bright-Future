@@ -36,7 +36,7 @@ export function SiteFooter() {
     <footer className="border-t border-[var(--color-hairline)] bg-[var(--color-canvas)]">
       <div className="container-edge grid gap-10 py-16 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
-          <BrandLogo href={null} size={34} />
+          <BrandLogo href={null} size={34} gradient />
           <p className="mt-4 max-w-xs text-[15px] text-[var(--color-body)]">
             A complete digital empowerment ecosystem for education,
             entrepreneurship, and innovation.
