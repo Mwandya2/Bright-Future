@@ -75,16 +75,16 @@ export default async function AdminHome() {
           {recentBookings && recentBookings.length > 0 ? (
             <ul className="mt-4 divide-y divide-[var(--color-hairline)]">
               {recentBookings.map((b) => (
-                <li key={b.id} className="flex items-center justify-between py-3">
-                  <div>
-                    <div className="text-[14px] font-medium text-[var(--color-ink)]">
+                <li key={b.id} className="flex items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <div className="truncate text-[14px] font-medium text-[var(--color-ink)]">
                       {b.profile?.full_name ?? b.profile?.email ?? "User"}
                     </div>
-                    <div className="text-[13px] capitalize text-[var(--color-muted)]">
+                    <div className="truncate text-[13px] capitalize text-[var(--color-muted)]">
                       {b.workstation_type.replace("_", " ")} · {b.booking_date}
                     </div>
                   </div>
-                  <span className="rounded-full bg-[var(--color-surface-strong)] px-2.5 py-1 text-[11px] font-semibold uppercase text-[var(--color-muted)]">
+                  <span className="shrink-0 rounded-full bg-[var(--color-surface-strong)] px-2.5 py-1 text-[11px] font-semibold uppercase text-[var(--color-muted)]">
                     {b.status}
                   </span>
                 </li>

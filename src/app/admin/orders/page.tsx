@@ -31,7 +31,7 @@ export default async function AdminOrdersPage() {
 
       <Card className="mt-8 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-[14px]">
+          <table className="w-full min-w-[640px] whitespace-nowrap text-left text-[14px]">
             <thead className="border-b border-[var(--color-hairline)] bg-[var(--color-canvas-soft)] text-[12px] uppercase tracking-[0.06em] text-[var(--color-muted)]">
               <tr>
                 <th className="px-5 py-3 font-semibold">Member</th>

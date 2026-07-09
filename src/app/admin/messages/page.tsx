@@ -35,23 +35,23 @@ export default async function AdminMessagesPage() {
         <div className="mt-8 space-y-4">
           {messages.map((m) => (
             <Card key={m.id} className="p-6">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <div>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                <div className="min-w-0">
                   <span className="text-[15px] font-medium text-[var(--color-ink)]">{m.name}</span>
-                  <a href={`mailto:${m.email}`} className="ml-2 text-[13px] text-[var(--color-muted)] hover:underline">
+                  <a href={`mailto:${m.email}`} className="ml-2 break-all text-[13px] text-[var(--color-muted)] hover:underline">
                     {m.email}
                   </a>
                 </div>
-                <span className="text-[12px] text-[var(--color-muted)]">
+                <span className="shrink-0 text-[12px] text-[var(--color-muted)]">
                   {new Date(m.created_at).toLocaleString()}
                 </span>
               </div>
               {m.subject && (
-                <div className="mt-2 text-[14px] font-medium text-[var(--color-body-strong)]">
+                <div className="mt-2 break-words text-[14px] font-medium text-[var(--color-body-strong)]">
                   {m.subject}
                 </div>
               )}
-              <p className="mt-2 whitespace-pre-wrap text-[15px] text-[var(--color-body)]">
+              <p className="mt-2 whitespace-pre-wrap break-words text-[15px] text-[var(--color-body)]">
                 {m.message}
               </p>
             </Card>
