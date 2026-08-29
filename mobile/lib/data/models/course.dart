@@ -16,6 +16,7 @@ class Course {
     this.instructorName,
     this.coverGradient,
     this.isPublished = true,
+    this.deliveryMode = DeliveryMode.inPerson,
     this.createdAt,
   });
 
@@ -31,6 +32,7 @@ class Course {
   final String? instructorName;
   final String? coverGradient;
   final bool isPublished;
+  final DeliveryMode deliveryMode;
   final DateTime? createdAt;
 
   bool get isFree => price <= 0;
@@ -60,6 +62,9 @@ class Course {
             J.strOrNull(json['coverGradient'] ?? json['cover_gradient']),
         isPublished:
             J.boolVal(json['isPublished'] ?? json['is_published'], true),
+        deliveryMode: DeliveryModeX.parse(
+          json['deliveryMode'] ?? json['delivery_mode'],
+        ),
         createdAt: J.date(json['createdAt'] ?? json['created_at']),
       );
 
@@ -75,6 +80,7 @@ class Course {
         'durationWeeks': durationWeeks,
         'instructorName': instructorName,
         'coverGradient': coverGradient,
+        'deliveryMode': deliveryMode.api,
         'isPublished': isPublished,
         'createdAt': createdAt?.toIso8601String(),
       };

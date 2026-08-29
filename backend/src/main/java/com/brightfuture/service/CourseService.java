@@ -79,6 +79,7 @@ public class CourseService {
                 .instructorName(req.getInstructorName())
                 .coverGradient(req.getCoverGradient() != null ? req.getCoverGradient() : "mint")
                 .isPublished(req.getIsPublished() != null ? req.getIsPublished() : false)
+                .deliveryMode(req.getDeliveryMode())
                 .build();
 
         return CourseDto.fromEntity(courseRepository.save(course));
@@ -99,6 +100,7 @@ public class CourseService {
         if (req.getInstructorName() != null) course.setInstructorName(req.getInstructorName());
         if (req.getCoverGradient() != null) course.setCoverGradient(req.getCoverGradient());
         if (req.getIsPublished() != null) course.setIsPublished(req.getIsPublished());
+        if (req.getDeliveryMode() != null) course.setDeliveryMode(req.getDeliveryMode());
 
         return CourseDto.fromEntity(courseRepository.save(course));
     }

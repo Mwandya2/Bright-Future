@@ -58,6 +58,7 @@ class CourseRepository {
     String? instructorName,
     String coverGradient = 'mint',
     bool isPublished = false,
+    DeliveryMode deliveryMode = DeliveryMode.inPerson,
   }) async {
     final dynamic data = await _api.post(
       '/courses',
@@ -73,6 +74,7 @@ class CourseRepository {
         'instructorName': instructorName,
         'coverGradient': coverGradient,
         'isPublished': isPublished,
+        'deliveryMode': deliveryMode.api,
       },
     );
     return Course.fromJson(J.map(data));

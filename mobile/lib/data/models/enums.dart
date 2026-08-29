@@ -32,6 +32,27 @@ extension UserRoleX on UserRole {
 }
 
 // ── Course level ──────────────────────────────────────────────
+/// How a course reaches the student. Decides whether iOS may take payment for
+/// it in-app: Apple forbids third-party payment for content consumed inside an
+/// app, but requires it for services consumed elsewhere - such as training
+/// delivered in person at the hub.
+enum DeliveryMode { inPerson, online }
+
+extension DeliveryModeX on DeliveryMode {
+  String get api => this == DeliveryMode.inPerson ? 'IN_PERSON' : 'ONLINE';
+
+  String get label =>
+      this == DeliveryMode.inPerson ? 'In person at the hub' : 'Online';
+
+  static DeliveryMode parse(dynamic value) {
+    // Defaults to in-person: that is the backend default, and the safe
+    // reading if the field is ever missing from an older payload.
+    return J.enumKey(value, 'IN_PERSON') == 'ONLINE'
+        ? DeliveryMode.online
+        : DeliveryMode.inPerson;
+  }
+}
+
 enum CourseLevel { beginner, intermediate, advanced }
 
 extension CourseLevelX on CourseLevel {

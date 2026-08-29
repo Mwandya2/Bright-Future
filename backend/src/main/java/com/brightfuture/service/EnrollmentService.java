@@ -4,9 +4,11 @@ import com.brightfuture.dto.course.EnrollmentDto;
 import com.brightfuture.entity.Course;
 import com.brightfuture.entity.Enrollment;
 import com.brightfuture.entity.EnrollmentStatus;
+import com.brightfuture.entity.PaymentStatus;
 import com.brightfuture.entity.User;
 import com.brightfuture.exception.BadRequestException;
 import com.brightfuture.exception.ResourceNotFoundException;
+import com.brightfuture.repository.CoursePaymentRepository;
 import com.brightfuture.repository.CourseRepository;
 import com.brightfuture.repository.EnrollmentRepository;
 import com.brightfuture.repository.UserRepository;
@@ -23,14 +25,17 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final CoursePaymentRepository paymentRepository;
 
     public EnrollmentService(
             EnrollmentRepository enrollmentRepository,
             CourseRepository courseRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CoursePaymentRepository paymentRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +54,8 @@ public class EnrollmentService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
+        requirePaymentForPaidCourse(user.getId(), course);
+
         return enrollmentRepository.findByUserAndCourse(user, course)
                 .map(EnrollmentDto::fromEntity)
                 .orElseGet(() -> {
@@ -60,6 +67,31 @@ public class EnrollmentService {
                             .build();
                     return EnrollmentDto.fromEntity(enrollmentRepository.save(newEnrollment));
                 });
+    }
+
+    /**
+     * A paid course may only be enrolled in once a payment for it has settled.
+     *
+     * <p>Enrolment is a separate endpoint from payment, so without this check
+     * any authenticated caller could POST /api/enrollments and take a paid
+     * course for nothing. The client is never consulted: the price comes from
+     * the course row and the evidence of payment from course_payments.
+     *
+     * <p>Free courses (price 0) are unaffected, as is enrolling again in a
+     * course already paid for.
+     */
+    private void requirePaymentForPaidCourse(UUID userId, Course course) {
+        int price = course.getPrice() == null ? 0 : course.getPrice();
+        if (price <= 0) {
+            return;
+        }
+        boolean paid = paymentRepository.existsByUserIdAndCourseIdAndStatus(
+                userId, course.getId(), PaymentStatus.PAID);
+        if (!paid) {
+            throw new BadRequestException(
+                    "This course must be paid for before you can enrol. "
+                            + "If you have just paid, wait a moment and try again.");
+        }
     }
 
     @Transactional

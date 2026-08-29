@@ -47,13 +47,22 @@ public class Course {
     @Column(name = "is_published", nullable = false)
     private Boolean isPublished = false;
 
+    /**
+     * Decides whether iOS may take payment for this course in-app. Defaults to
+     * IN_PERSON: the hub's courses are taught on site, and that is the mode
+     * Apple permits a third-party gateway for.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_mode", nullable = false)
+    private DeliveryMode deliveryMode = DeliveryMode.IN_PERSON;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     public Course() {}
 
-    public Course(UUID id, String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished, Instant createdAt) {
+    public Course(UUID id, String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished, DeliveryMode deliveryMode, Instant createdAt) {
         this.id = id;
         this.title = title;
         this.slug = slug;
@@ -66,6 +75,7 @@ public class Course {
         this.instructorName = instructorName;
         this.coverGradient = coverGradient != null ? coverGradient : "mint";
         this.isPublished = isPublished != null ? isPublished : false;
+        this.deliveryMode = deliveryMode != null ? deliveryMode : DeliveryMode.IN_PERSON;
         this.createdAt = createdAt;
     }
 
@@ -84,6 +94,7 @@ public class Course {
         private String instructorName;
         private String coverGradient = "mint";
         private Boolean isPublished = false;
+        private DeliveryMode deliveryMode = DeliveryMode.IN_PERSON;
         private Instant createdAt;
 
         public Builder id(UUID id) { this.id = id; return this; }
@@ -98,10 +109,11 @@ public class Course {
         public Builder instructorName(String instructorName) { this.instructorName = instructorName; return this; }
         public Builder coverGradient(String coverGradient) { this.coverGradient = coverGradient; return this; }
         public Builder isPublished(Boolean isPublished) { this.isPublished = isPublished; return this; }
+        public Builder deliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; return this; }
         public Builder createdAt(Instant createdAt) { this.createdAt = createdAt; return this; }
 
         public Course build() {
-            return new Course(id, title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished, createdAt);
+            return new Course(id, title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished, deliveryMode, createdAt);
         }
     }
 
@@ -129,6 +141,8 @@ public class Course {
     public void setCoverGradient(String coverGradient) { this.coverGradient = coverGradient; }
     public Boolean getIsPublished() { return isPublished; }
     public void setIsPublished(Boolean isPublished) { this.isPublished = isPublished; }
+    public DeliveryMode getDeliveryMode() { return deliveryMode; }
+    public void setDeliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 }

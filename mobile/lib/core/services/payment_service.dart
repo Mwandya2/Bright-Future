@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../data/models/course.dart';
+import '../../data/models/enums.dart';
 import '../network/api_client.dart';
 import '../network/api_exception.dart';
 
@@ -47,14 +49,19 @@ class PaymentService {
 
   final ApiClient _api;
 
-  /// Apple requires in-app purchase for digital content bought inside an iOS
-  /// app. A course taught in person at the hub is a physical service and may
-  /// be charged for directly, but a course delivered inside the app may not -
-  /// using a third-party gateway there risks App Store rejection.
+  /// Whether this particular course may be paid for inside the app.
   ///
-  /// So on iOS enrolment is free in the app and the fee is settled on the
-  /// website. Android has no such restriction and pays in-app.
-  static bool get canPayInApp => defaultTargetPlatform != TargetPlatform.iOS;
+  /// Apple requires in-app purchase for digital content bought inside an iOS
+  /// app, but explicitly forbids it for services consumed elsewhere. A course
+  /// taught in person at the hub is the second kind, so ClickPesa is fine for
+  /// it on any platform. A course delivered online is the first kind, so on
+  /// iOS the app reserves a place free of charge instead.
+  ///
+  /// Android has no equivalent restriction and pays in-app either way.
+  static bool canPayInAppFor(Course course) {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return true;
+    return course.deliveryMode == DeliveryMode.inPerson;
+  }
 
   /// Starts a payment: the customer gets a mobile money PIN prompt.
   ///

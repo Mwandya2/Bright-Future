@@ -1,6 +1,7 @@
 package com.brightfuture.dto.course;
 
 import com.brightfuture.entity.Course;
+import com.brightfuture.entity.DeliveryMode;
 import com.brightfuture.entity.CourseLevel;
 
 import java.time.Instant;
@@ -19,11 +20,12 @@ public class CourseDto {
     private String instructorName;
     private String coverGradient;
     private Boolean isPublished;
+    private DeliveryMode deliveryMode;
     private Instant createdAt;
 
     public CourseDto() {}
 
-    public CourseDto(UUID id, String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished, Instant createdAt) {
+    public CourseDto(UUID id, String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished, DeliveryMode deliveryMode, Instant createdAt) {
         this.id = id;
         this.title = title;
         this.slug = slug;
@@ -36,6 +38,7 @@ public class CourseDto {
         this.instructorName = instructorName;
         this.coverGradient = coverGradient;
         this.isPublished = isPublished;
+        this.deliveryMode = deliveryMode;
         this.createdAt = createdAt;
     }
 
@@ -54,6 +57,7 @@ public class CourseDto {
         private String instructorName;
         private String coverGradient;
         private Boolean isPublished;
+        private DeliveryMode deliveryMode;
         private Instant createdAt;
 
         public Builder id(UUID id) { this.id = id; return this; }
@@ -68,10 +72,11 @@ public class CourseDto {
         public Builder instructorName(String instructorName) { this.instructorName = instructorName; return this; }
         public Builder coverGradient(String coverGradient) { this.coverGradient = coverGradient; return this; }
         public Builder isPublished(Boolean isPublished) { this.isPublished = isPublished; return this; }
+        public Builder deliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; return this; }
         public Builder createdAt(Instant createdAt) { this.createdAt = createdAt; return this; }
 
         public CourseDto build() {
-            return new CourseDto(id, title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished, createdAt);
+            return new CourseDto(id, title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished, deliveryMode, createdAt);
         }
     }
 
@@ -90,6 +95,7 @@ public class CourseDto {
                 .instructorName(course.getInstructorName())
                 .coverGradient(course.getCoverGradient())
                 .isPublished(course.getIsPublished())
+                .deliveryMode(course.getDeliveryMode())
                 .createdAt(course.getCreatedAt())
                 .build();
     }
@@ -118,6 +124,8 @@ public class CourseDto {
     public void setCoverGradient(String coverGradient) { this.coverGradient = coverGradient; }
     public Boolean getIsPublished() { return isPublished; }
     public void setIsPublished(Boolean isPublished) { this.isPublished = isPublished; }
+    public DeliveryMode getDeliveryMode() { return deliveryMode; }
+    public void setDeliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 }

@@ -1,9 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/config/app_config.dart';
-import '../../../core/services/payment_service.dart';
 import '../../../core/services/biometric_service.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../core/storage/app_prefs.dart';
@@ -210,9 +210,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _meta(
                   context,
                   'Payments',
-                  PaymentService.canPayInApp
-                      ? 'Mobile money in app'
-                      : 'On the website',
+                  // Whether a given course can be paid for in-app now depends
+                  // on that course, so this reports the platform rule instead.
+                  defaultTargetPlatform == TargetPlatform.iOS
+                      ? 'Mobile money for hub courses'
+                      : 'Mobile money',
                 ),
                 _meta(
                   context,

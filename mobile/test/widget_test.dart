@@ -68,6 +68,36 @@ void main() {
     });
   });
 
+  group('Delivery mode', () {
+    test('reads both the Java and lowercase forms', () {
+      expect(DeliveryModeX.parse('IN_PERSON'), DeliveryMode.inPerson);
+      expect(DeliveryModeX.parse('ONLINE'), DeliveryMode.online);
+      expect(DeliveryModeX.parse('online'), DeliveryMode.online);
+    });
+
+    test('defaults to in-person when absent or unknown', () {
+      // An older payload without the field must not silently become ONLINE,
+      // which would stop iOS taking payment for a hub course.
+      expect(DeliveryModeX.parse(null), DeliveryMode.inPerson);
+      expect(DeliveryModeX.parse('nonsense'), DeliveryMode.inPerson);
+    });
+
+    test('round-trips to the API form', () {
+      expect(DeliveryMode.inPerson.api, 'IN_PERSON');
+      expect(DeliveryMode.online.api, 'ONLINE');
+    });
+
+    test('a course payload without the field is in-person', () {
+      expect(Course.fromJson(<String, dynamic>{}).deliveryMode,
+          DeliveryMode.inPerson);
+      expect(
+        Course.fromJson(<String, dynamic>{'deliveryMode': 'ONLINE'})
+            .deliveryMode,
+        DeliveryMode.online,
+      );
+    });
+  });
+
   group('Course model', () {
     test('parses a backend payload', () {
       final Course c = Course.fromJson(<String, dynamic>{

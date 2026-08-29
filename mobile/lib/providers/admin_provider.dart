@@ -145,6 +145,8 @@ class AdminProvider extends ChangeNotifier with LoadState {
         instructorName: form['instructorName'] as String?,
         coverGradient: (form['coverGradient'] as String?) ?? 'mint',
         isPublished: (form['isPublished'] as bool?) ?? false,
+        deliveryMode:
+            (form['deliveryMode'] as DeliveryMode?) ?? DeliveryMode.inPerson,
       );
       _allCourses = <Course>[created, ..._allCourses];
       notifyListeners();

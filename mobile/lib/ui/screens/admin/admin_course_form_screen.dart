@@ -46,6 +46,8 @@ class _AdminCourseFormScreenState extends State<AdminCourseFormScreen> {
   late CourseLevel _level = widget.course?.level ?? CourseLevel.beginner;
   late String _cover = widget.course?.coverGradient ?? 'mint';
   late bool _published = widget.course?.isPublished ?? false;
+  late DeliveryMode _delivery =
+      widget.course?.deliveryMode ?? DeliveryMode.inPerson;
   bool _busy = false;
 
   bool get _isEdit => widget.course != null;
@@ -103,6 +105,7 @@ class _AdminCourseFormScreenState extends State<AdminCourseFormScreen> {
         'instructorName': _instructor.text.trim(),
         'coverGradient': _cover,
         'isPublished': _published,
+        'deliveryMode': _delivery.api,
       });
     } else {
       error = await admin.createCourse(<String, dynamic>{
@@ -117,6 +120,7 @@ class _AdminCourseFormScreenState extends State<AdminCourseFormScreen> {
         'instructorName': _instructor.text.trim(),
         'coverGradient': _cover,
         'isPublished': _published,
+        'deliveryMode': _delivery,
       });
     }
 
@@ -261,6 +265,40 @@ class _AdminCourseFormScreenState extends State<AdminCourseFormScreen> {
                       label: Text(l.label),
                       selected: _level == l,
                       onSelected: (_) => setState(() => _level = l),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'Delivery',
+              style: TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+                color: context.inkColor,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'In-person courses can be paid for inside the iPhone app. '
+              'Online courses cannot - Apple requires its own in-app purchase '
+              'for content delivered in the app, so those students reserve a '
+              'place and pay elsewhere.',
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.45,
+                color: context.mutedColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: DeliveryMode.values
+                  .map(
+                    (DeliveryMode m) => ChoiceChip(
+                      label: Text(m.label),
+                      selected: _delivery == m,
+                      onSelected: (_) => setState(() => _delivery = m),
                     ),
                   )
                   .toList(),

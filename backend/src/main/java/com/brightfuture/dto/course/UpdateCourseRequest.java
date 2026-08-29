@@ -1,6 +1,7 @@
 package com.brightfuture.dto.course;
 
 import com.brightfuture.entity.CourseLevel;
+import com.brightfuture.entity.DeliveryMode;
 
 public class UpdateCourseRequest {
     private String title;
@@ -14,10 +15,11 @@ public class UpdateCourseRequest {
     private String instructorName;
     private String coverGradient;
     private Boolean isPublished;
+    private DeliveryMode deliveryMode;
 
     public UpdateCourseRequest() {}
 
-    public UpdateCourseRequest(String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished) {
+    public UpdateCourseRequest(String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished, DeliveryMode deliveryMode) {
         this.title = title;
         this.slug = slug;
         this.summary = summary;
@@ -29,6 +31,7 @@ public class UpdateCourseRequest {
         this.instructorName = instructorName;
         this.coverGradient = coverGradient;
         this.isPublished = isPublished;
+        this.deliveryMode = deliveryMode;
     }
 
     public static Builder builder() { return new Builder(); }
@@ -45,6 +48,7 @@ public class UpdateCourseRequest {
         private String instructorName;
         private String coverGradient;
         private Boolean isPublished;
+        private DeliveryMode deliveryMode;
 
         public Builder title(String title) { this.title = title; return this; }
         public Builder slug(String slug) { this.slug = slug; return this; }
@@ -57,9 +61,10 @@ public class UpdateCourseRequest {
         public Builder instructorName(String instructorName) { this.instructorName = instructorName; return this; }
         public Builder coverGradient(String coverGradient) { this.coverGradient = coverGradient; return this; }
         public Builder isPublished(Boolean isPublished) { this.isPublished = isPublished; return this; }
+        public Builder deliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; return this; }
 
         public UpdateCourseRequest build() {
-            return new UpdateCourseRequest(title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished);
+            return new UpdateCourseRequest(title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished, deliveryMode);
         }
     }
 
@@ -85,4 +90,6 @@ public class UpdateCourseRequest {
     public void setCoverGradient(String coverGradient) { this.coverGradient = coverGradient; }
     public Boolean getIsPublished() { return isPublished; }
     public void setIsPublished(Boolean isPublished) { this.isPublished = isPublished; }
+    public DeliveryMode getDeliveryMode() { return deliveryMode; }
+    public void setDeliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; }
 }

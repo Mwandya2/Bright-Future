@@ -37,6 +37,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   bool _busy = false;
 
+  /// Decided per course, not per platform - see PaymentService.canPayInAppFor.
+  bool get _payInApp => PaymentService.canPayInAppFor(widget.course);
+
   /// Set once the PIN prompt is on its way; the screen then shows the waiting
   /// state instead of the form.
   String? _orderReference;
@@ -232,16 +235,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          PaymentService.canPayInApp ? 'Checkout' : 'Enrol',
-        ),
+        title: Text(_payInApp ? 'Checkout' : 'Enrol'),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
         children: <Widget>[
           _summaryCard(c),
           const SizedBox(height: 16),
-          if (!PaymentService.canPayInApp)
+          if (!_payInApp)
             ..._payOnWebsiteSection(c)
           else if (_orderReference != null)
             ..._waitingSection()

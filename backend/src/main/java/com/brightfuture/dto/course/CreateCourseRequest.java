@@ -1,6 +1,7 @@
 package com.brightfuture.dto.course;
 
 import com.brightfuture.entity.CourseLevel;
+import com.brightfuture.entity.DeliveryMode;
 import jakarta.validation.constraints.NotBlank;
 
 public class CreateCourseRequest {
@@ -19,9 +20,12 @@ public class CreateCourseRequest {
     private String coverGradient = "mint";
     private Boolean isPublished = false;
 
+    /** Defaults to IN_PERSON: hub courses are taught on site. */
+    private DeliveryMode deliveryMode = DeliveryMode.IN_PERSON;
+
     public CreateCourseRequest() {}
 
-    public CreateCourseRequest(String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished) {
+    public CreateCourseRequest(String title, String slug, String summary, String description, String category, CourseLevel level, Integer price, Integer durationWeeks, String instructorName, String coverGradient, Boolean isPublished, DeliveryMode deliveryMode) {
         this.title = title;
         this.slug = slug;
         this.summary = summary;
@@ -49,6 +53,7 @@ public class CreateCourseRequest {
         private String instructorName;
         private String coverGradient = "mint";
         private Boolean isPublished = false;
+        private DeliveryMode deliveryMode = DeliveryMode.IN_PERSON;
 
         public Builder title(String title) { this.title = title; return this; }
         public Builder slug(String slug) { this.slug = slug; return this; }
@@ -61,9 +66,10 @@ public class CreateCourseRequest {
         public Builder instructorName(String instructorName) { this.instructorName = instructorName; return this; }
         public Builder coverGradient(String coverGradient) { this.coverGradient = coverGradient; return this; }
         public Builder isPublished(Boolean isPublished) { this.isPublished = isPublished; return this; }
+        public Builder deliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; return this; }
 
         public CreateCourseRequest build() {
-            return new CreateCourseRequest(title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished);
+            return new CreateCourseRequest(title, slug, summary, description, category, level, price, durationWeeks, instructorName, coverGradient, isPublished, deliveryMode);
         }
     }
 
@@ -89,4 +95,6 @@ public class CreateCourseRequest {
     public void setCoverGradient(String coverGradient) { this.coverGradient = coverGradient; }
     public Boolean getIsPublished() { return isPublished; }
     public void setIsPublished(Boolean isPublished) { this.isPublished = isPublished; }
+    public DeliveryMode getDeliveryMode() { return deliveryMode; }
+    public void setDeliveryMode(DeliveryMode deliveryMode) { this.deliveryMode = deliveryMode; }
 }
