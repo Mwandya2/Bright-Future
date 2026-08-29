@@ -78,7 +78,16 @@ public class AuthService {
 
         // No token yet. The account is not usable until the code sent to that
         // handset comes back, which is what ties it to a real person.
-        verificationService.sendCode(user, VerificationChannel.PHONE, phone);
+        //
+        // If the code cannot be sent, the whole signup is rolled back. Letting
+        // it succeed would create an account that can never be verified and so
+        // can never be signed in to - a dead account and a support call.
+        boolean sent = verificationService.sendCode(user, VerificationChannel.PHONE, phone);
+        if (!sent) {
+            throw new BadRequestException(
+                    "We could not send your code by SMS just now. "
+                            + "Please try again in a moment.");
+        }
         if (user.getEmail() != null) {
             try {
                 verificationService.sendCode(user, VerificationChannel.EMAIL, user.getEmail());
