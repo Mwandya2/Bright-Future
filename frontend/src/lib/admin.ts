@@ -15,5 +15,12 @@ export function isTheAdmin(
   email: string | null | undefined,
   role: string | null | undefined,
 ): boolean {
-  return role === "admin" && !!email && email.toLowerCase() === ADMIN_EMAIL;
+  // The Spring API issues the role as Role.name(), i.e. "ADMIN". Supabase used
+  // to store it lowercase, so compare case-insensitively rather than assuming
+  // either shape.
+  return (
+    role?.toLowerCase() === "admin" &&
+    !!email &&
+    email.toLowerCase() === ADMIN_EMAIL
+  );
 }
