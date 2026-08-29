@@ -33,8 +33,14 @@ app:
     secret: ${JWT_SECRET:BrightFutureSuperSecretKeyForJWTSigningAndVerificationPurposeMustBe256BitsLong!}
     expiration-ms: 604800000 # 7 days
   admin:
+    # The administrator's SIGN-IN identity. Only this address may use
+    # /api/auth/admin-login, and it is the account DataInitializer creates.
     email: ${ADMIN_EMAIL:admin@brightfuture.best.com}
     default-password: ${ADMIN_PASSWORD:Admin@BrightFuture2026!}
+    # Where administrator notifications are DELIVERED. Deliberately separate
+    # from `email` above: the sign-in identity is a username on a domain that
+    # may have no mailbox, so defaulting mail to it would silently lose it.
+    notify-email: ${ADMIN_NOTIFY_EMAIL:mtoimnyama@gmail.com}
   cors:
     allowed-origins:
       - "http://localhost:3000"

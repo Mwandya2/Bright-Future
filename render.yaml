@@ -47,6 +47,11 @@ services:
       - key: ADMIN_PASSWORD
         sync: false
 
+      # Where administrator notifications are delivered. Separate from
+      # ADMIN_EMAIL, which is only a sign-in identity.
+      - key: ADMIN_NOTIFY_EMAIL
+        value: mtoimnyama@gmail.com
+
       # ── ClickPesa ─────────────────────────────────────────────
       - key: CLICKPESA_CLIENT_ID
         sync: false
