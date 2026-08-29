@@ -15,6 +15,15 @@ import '../data/repositories/auth_repository.dart';
 
 enum AuthState { unknown, signedOut, signedIn, locked }
 
+/// What happened when someone tried to create an account.
+enum SignUpOutcome {
+  /// Account created; the code sent by SMS still has to be confirmed.
+  needsPhoneVerification,
+
+  /// Something went wrong - read [AuthProvider.error].
+  failed,
+}
+
 class AuthProvider extends ChangeNotifier {
   AuthProvider({
     required AuthRepository repository,
@@ -98,11 +107,16 @@ class AuthProvider extends ChangeNotifier {
     return ok;
   }
 
+  /// Remembered only long enough to know which account a 403 referred to.
+  String? _lastAttemptedEmail;
+
   Future<bool> signIn({
     required String email,
     required String password,
-  }) =>
-      _run(() => _repo.login(email: email, password: password));
+  }) {
+    _lastAttemptedEmail = email.trim();
+    return _run(() => _repo.login(email: email, password: password));
+  }
 
   Future<bool> signInAsAdmin({
     required String email,
@@ -110,18 +124,75 @@ class AuthProvider extends ChangeNotifier {
   }) =>
       _run(() => _repo.adminLogin(email: email, password: password));
 
-  Future<bool> signUp({
+  /// Creates the account. Signup no longer signs anyone in: the server issues
+  /// no token until the code sent to the phone comes back, which is what ties
+  /// an account to a handset somebody actually holds.
+  Future<SignUpOutcome> signUp({
     required String fullName,
     required String email,
     required String password,
     String? phone,
-  }) =>
-      _run(() => _repo.signup(
-            fullName: fullName,
-            email: email,
-            password: password,
-            phone: phone,
-          ));
+  }) async {
+    _busy = true;
+    _error = null;
+    notifyListeners();
+    try {
+      await _repo.signup(
+        fullName: fullName,
+        email: email,
+        password: password,
+        phone: phone,
+      );
+      _pendingVerificationEmail = email.trim();
+      _busy = false;
+      notifyListeners();
+      return SignUpOutcome.needsPhoneVerification;
+    } on ApiException catch (e) {
+      _error = e.message;
+    } catch (_) {
+      _error = 'Something went wrong. Please try again.';
+    }
+    _busy = false;
+    notifyListeners();
+    return SignUpOutcome.failed;
+  }
+
+  /// Set when an account exists but its phone is unconfirmed, so the UI knows
+  /// to show the code screen rather than the sign-in form.
+  String? _pendingVerificationEmail;
+  String? get pendingVerificationEmail => _pendingVerificationEmail;
+
+  void clearPendingVerification() {
+    _pendingVerificationEmail = null;
+    notifyListeners();
+  }
+
+  /// Confirms the SMS code. On success the account is usable and signed in.
+  Future<bool> verifyPhone({
+    required String email,
+    required String code,
+  }) async {
+    final bool ok =
+        await _run(() => _repo.verifyPhone(email: email, code: code));
+    if (ok) _pendingVerificationEmail = null;
+    return ok;
+  }
+
+  /// Asks for a fresh code. Returns an error message, or null on success.
+  Future<String?> resendCode({
+    required String email,
+    String channel = 'PHONE',
+  }) async {
+    try {
+      await _repo.resendCode(email: email, channel: channel);
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    } catch (_) {
+      return 'Could not send a new code. Please try again.';
+    }
+  }
+
 
   Future<bool> _run(Future<AuthSession> Function() action) async {
     _busy = true;
@@ -140,6 +211,10 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } on ApiException catch (e) {
       _error = e.message;
+      // 403 means the password was right but the phone is unconfirmed. Record
+      // it so the sign-in screen can offer the code screen rather than leaving
+      // the user staring at an error they cannot act on.
+      if (e.isForbidden) _pendingVerificationEmail = _lastAttemptedEmail;
     } catch (e) {
       _error = 'Something went wrong. Please try again.';
     }

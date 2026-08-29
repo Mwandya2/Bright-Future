@@ -74,6 +74,10 @@ public class DataInitializer implements CommandLineRunner {
                     .phone("+255 700 000 001")
                     .passwordHash(passwordEncoder.encode(adminPassword))
                     .role(Role.ADMIN)
+                    // The administrator is provisioned by the server, not by
+                    // someone typing a code into a phone.
+                    .phoneVerified(true)
+                    .emailVerified(true)
                     .build();
             userRepository.save(admin);
             log.info("Provisioned default admin account: {}", adminEmail);

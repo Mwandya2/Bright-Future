@@ -34,6 +34,17 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(ex.getMessage()));
     }
 
+    /**
+     * 403 rather than 401, so the client can tell "finish verifying" from
+     * "wrong password" and send the user to the code screen instead of making
+     * them retype a password that was correct.
+     */
+    @ExceptionHandler(PhoneNotVerifiedException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePhoneNotVerified(PhoneNotVerifiedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

@@ -8,6 +8,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/app_snack.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/brand_logo.dart';
+import 'verify_phone_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -44,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
     FocusScope.of(context).unfocus();
 
     final AuthProvider auth = context.read<AuthProvider>();
-    final bool ok = await auth.signUp(
+    final SignUpOutcome outcome = await auth.signUp(
       fullName: _name.text,
       email: _email.text,
       password: _password.text,
@@ -52,8 +53,17 @@ class _SignupScreenState extends State<SignupScreen> {
     );
 
     if (!mounted) return;
-    if (ok) {
-      Navigator.of(context).popUntil((Route<dynamic> r) => r.isFirst);
+    if (outcome == SignUpOutcome.needsPhoneVerification) {
+      // The account exists but holds no session yet. Confirming the code is
+      // what finishes signing up.
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => VerifyPhoneScreen(
+            email: _email.text.trim(),
+            phone: _phone.text.trim(),
+          ),
+        ),
+      );
     } else {
       AppSnack.error(context, auth.error ?? 'Could not create your account.');
     }
@@ -121,13 +131,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: 16),
                     AppTextField(
-                      label: 'Phone number (optional)',
+                      label: 'Phone number',
                       controller: _phone,
                       hint: '+255 7XX XXX XXX',
                       prefixIcon: Icons.phone_outlined,
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
-                      validator: Validators.phone,
+                      validator: Validators.tzMobile,
                     ),
                     const SizedBox(height: 16),
                     AppTextField(

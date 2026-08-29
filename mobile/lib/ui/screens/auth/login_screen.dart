@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 import '../../../core/storage/app_prefs.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
@@ -10,6 +11,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/app_snack.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/brand_logo.dart';
+import 'verify_phone_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -44,9 +46,23 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).popUntil((Route<dynamic> r) => r.isFirst);
-    } else {
-      AppSnack.error(context, auth.error ?? 'Could not sign you in.');
+      return;
     }
+
+    // Password was right, phone never confirmed: send them to finish rather
+    // than showing an error they cannot do anything about.
+    final String? pending = auth.pendingVerificationEmail;
+    if (pending != null) {
+      AppSnack.info(context, auth.error ?? 'Confirm your phone to continue.');
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => VerifyPhoneScreen(email: pending),
+        ),
+      );
+      return;
+    }
+
+    AppSnack.error(context, auth.error ?? 'Could not sign you in.');
   }
 
   @override

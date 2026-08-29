@@ -59,6 +59,9 @@ app:
     # signing key that is committed in application.yml.
     secret: ${JWT_SECRET}
     expiration-ms: ${JWT_EXPIRATION_MS:604800000}
+  verification:
+    # Never log a live one-time code.
+    log-codes: false
   admin:
     # Sign-in identity (see application.yml for why this differs from
     # notify-email).
@@ -68,6 +71,18 @@ app:
     notify-email: ${ADMIN_NOTIFY_EMAIL:mtoimnyama@gmail.com}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+sms:
+  beem:
+    base-url: ${BEEM_BASE_URL:https://apisms.beem.africa/v1/send}
+    api-key: ${BEEM_API_KEY:}
+    secret-key: ${BEEM_SECRET_KEY:}
+    sender-id: ${BEEM_SENDER_ID:INFO}
+
+email:
+  resend:
+    api-key: ${RESEND_API_KEY:}
+    from: ${RESEND_FROM_EMAIL:Bright Future <onboarding@resend.dev>}
 
 clickpesa:
   webhook-secret: ${CLICKPESA_WEBHOOK_SECRET:}

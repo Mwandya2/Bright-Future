@@ -39,6 +39,10 @@ app:
   jwt:
     secret: ${JWT_SECRET:BrightFutureSuperSecretKeyForJWTSigningAndVerificationPurposeMustBe256BitsLong!}
     expiration-ms: 604800000 # 7 days
+  verification:
+    # Writes the one-time code to the log. Development only - it puts a working
+    # credential in plain text. The prod profile forces this off.
+    log-codes: ${VERIFICATION_LOG_CODES:true}
   admin:
     # The administrator's SIGN-IN identity. Only this address may use
     # /api/auth/admin-login, and it is the account DataInitializer creates.
@@ -57,6 +61,20 @@ app:
 # ClickPesa mobile money (Tanzania). Values come from the environment - never
 # commit the api key. Put them in backend/.env.local (gitignored) and load with:
 #   set -a; source backend/.env.local; set +a
+# One-time code delivery. Both are optional: with neither configured the code
+# is written to the log (see app.verification.log-codes) so local signup works.
+sms:
+  beem:
+    base-url: ${BEEM_BASE_URL:https://apisms.beem.africa/v1/send}
+    api-key: ${BEEM_API_KEY:}
+    secret-key: ${BEEM_SECRET_KEY:}
+    sender-id: ${BEEM_SENDER_ID:INFO}
+
+email:
+  resend:
+    api-key: ${RESEND_API_KEY:}
+    from: ${RESEND_FROM_EMAIL:Bright Future <onboarding@resend.dev>}
+
 clickpesa:
   # Shared secret in the webhook URL path. Leave blank to reject every
   # callback - the endpoint fails closed.

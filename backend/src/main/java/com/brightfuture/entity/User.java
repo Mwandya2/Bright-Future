@@ -33,13 +33,25 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    /**
+     * Set once the account holder has entered the code sent to their phone.
+     * Sign-in is refused until this is true, so every account is tied to a
+     * handset someone actually controls.
+     */
+    @Column(name = "phone_verified", nullable = false, columnDefinition = "boolean default false")
+    private Boolean phoneVerified = false;
+
+    /** Same for email, but not required to sign in. */
+    @Column(name = "email_verified", nullable = false, columnDefinition = "boolean default false")
+    private Boolean emailVerified = false;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     public User() {}
 
-    public User(UUID id, String email, String passwordHash, String fullName, String phone, Role role, String avatarUrl, Instant createdAt) {
+    public User(UUID id, String email, String passwordHash, String fullName, String phone, Role role, String avatarUrl, Boolean phoneVerified, Boolean emailVerified, Instant createdAt) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -47,6 +59,8 @@ public class User {
         this.phone = phone;
         this.role = role != null ? role : Role.STUDENT;
         this.avatarUrl = avatarUrl;
+        this.phoneVerified = phoneVerified != null ? phoneVerified : false;
+        this.emailVerified = emailVerified != null ? emailVerified : false;
         this.createdAt = createdAt;
     }
 
@@ -62,6 +76,8 @@ public class User {
         private String phone;
         private Role role = Role.STUDENT;
         private String avatarUrl;
+        private Boolean phoneVerified = false;
+        private Boolean emailVerified = false;
         private Instant createdAt;
 
         public Builder id(UUID id) { this.id = id; return this; }
@@ -71,10 +87,12 @@ public class User {
         public Builder phone(String phone) { this.phone = phone; return this; }
         public Builder role(Role role) { this.role = role; return this; }
         public Builder avatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; return this; }
+        public Builder phoneVerified(Boolean phoneVerified) { this.phoneVerified = phoneVerified; return this; }
+        public Builder emailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; return this; }
         public Builder createdAt(Instant createdAt) { this.createdAt = createdAt; return this; }
 
         public User build() {
-            return new User(id, email, passwordHash, fullName, phone, role, avatarUrl, createdAt);
+            return new User(id, email, passwordHash, fullName, phone, role, avatarUrl, phoneVerified, emailVerified, createdAt);
         }
     }
 
@@ -90,6 +108,10 @@ public class User {
     public void setPhone(String phone) { this.phone = phone; }
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+    public Boolean getPhoneVerified() { return phoneVerified != null && phoneVerified; }
+    public void setPhoneVerified(Boolean phoneVerified) { this.phoneVerified = phoneVerified; }
+    public Boolean getEmailVerified() { return emailVerified != null && emailVerified; }
+    public void setEmailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; }
     public String getAvatarUrl() { return avatarUrl; }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
     public Instant getCreatedAt() { return createdAt; }

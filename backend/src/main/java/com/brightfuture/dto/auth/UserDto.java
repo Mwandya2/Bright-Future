@@ -13,17 +13,21 @@ public class UserDto {
     private String phone;
     private Role role;
     private String avatarUrl;
+    private Boolean phoneVerified;
+    private Boolean emailVerified;
     private Instant createdAt;
 
     public UserDto() {}
 
-    public UserDto(UUID id, String email, String fullName, String phone, Role role, String avatarUrl, Instant createdAt) {
+    public UserDto(UUID id, String email, String fullName, String phone, Role role, String avatarUrl, Boolean phoneVerified, Boolean emailVerified, Instant createdAt) {
         this.id = id;
         this.email = email;
         this.fullName = fullName;
         this.phone = phone;
         this.role = role;
         this.avatarUrl = avatarUrl;
+        this.phoneVerified = phoneVerified;
+        this.emailVerified = emailVerified;
         this.createdAt = createdAt;
     }
 
@@ -36,6 +40,8 @@ public class UserDto {
         private String phone;
         private Role role;
         private String avatarUrl;
+        private Boolean phoneVerified;
+        private Boolean emailVerified;
         private Instant createdAt;
 
         public Builder id(UUID id) { this.id = id; return this; }
@@ -44,10 +50,12 @@ public class UserDto {
         public Builder phone(String phone) { this.phone = phone; return this; }
         public Builder role(Role role) { this.role = role; return this; }
         public Builder avatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; return this; }
+        public Builder phoneVerified(Boolean phoneVerified) { this.phoneVerified = phoneVerified; return this; }
+        public Builder emailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; return this; }
         public Builder createdAt(Instant createdAt) { this.createdAt = createdAt; return this; }
 
         public UserDto build() {
-            return new UserDto(id, email, fullName, phone, role, avatarUrl, createdAt);
+            return new UserDto(id, email, fullName, phone, role, avatarUrl, phoneVerified, emailVerified, createdAt);
         }
     }
 
@@ -60,10 +68,16 @@ public class UserDto {
                 .phone(user.getPhone())
                 .role(user.getRole())
                 .avatarUrl(user.getAvatarUrl())
+                .phoneVerified(user.getPhoneVerified())
+                .emailVerified(user.getEmailVerified())
                 .createdAt(user.getCreatedAt())
                 .build();
     }
 
+    public Boolean getPhoneVerified() { return phoneVerified; }
+    public void setPhoneVerified(Boolean v) { this.phoneVerified = v; }
+    public Boolean getEmailVerified() { return emailVerified; }
+    public void setEmailVerified(Boolean v) { this.emailVerified = v; }
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
     public String getEmail() { return email; }

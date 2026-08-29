@@ -59,6 +59,44 @@ class AuthRepository {
     return AuthSession.fromJson(J.map(data));
   }
 
+  /// Confirms the SMS code and completes signup, returning a usable session.
+  Future<AuthSession> verifyPhone({
+    required String email,
+    required String code,
+  }) async {
+    final dynamic data = await _api.post(
+      '/auth/verify-phone',
+      authenticated: false,
+      body: <String, dynamic>{'email': email.trim(), 'code': code.trim()},
+    );
+    return AuthSession.fromJson(J.map(data));
+  }
+
+  /// Confirms the emailed code. Does not affect sign-in.
+  Future<AppUser> verifyEmail({
+    required String email,
+    required String code,
+  }) async {
+    final dynamic data = await _api.post(
+      '/auth/verify-email',
+      authenticated: false,
+      body: <String, dynamic>{'email': email.trim(), 'code': code.trim()},
+    );
+    return AppUser.fromJson(J.map(data));
+  }
+
+  /// Asks for a fresh code. Rate limited on the server.
+  Future<void> resendCode({
+    required String email,
+    String channel = 'PHONE',
+  }) async {
+    await _api.post(
+      '/auth/resend-code',
+      authenticated: false,
+      body: <String, dynamic>{'email': email.trim(), 'channel': channel},
+    );
+  }
+
   Future<AppUser> me() async {
     final dynamic data = await _api.get('/auth/me');
     return AppUser.fromJson(J.map(data));

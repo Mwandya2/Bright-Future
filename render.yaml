@@ -52,6 +52,23 @@ services:
       - key: ADMIN_NOTIFY_EMAIL
         value: mtoimnyama@gmail.com
 
+      # ── Signup verification ───────────────────────────────────
+      # Beem Africa sends the SMS one-time code. Without these, signup cannot
+      # complete, because a confirmed phone number is required.
+      - key: BEEM_API_KEY
+        sync: false
+      - key: BEEM_SECRET_KEY
+        sync: false
+      # Must be a sender ID registered with Beem and approved by the TCRA.
+      - key: BEEM_SENDER_ID
+        value: INFO
+
+      # Resend sends the email code. Optional - email is not required to sign in.
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+
       # ── ClickPesa ─────────────────────────────────────────────
       - key: CLICKPESA_CLIENT_ID
         sync: false
