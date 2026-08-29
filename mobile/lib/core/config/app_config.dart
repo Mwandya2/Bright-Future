@@ -30,7 +30,15 @@ class AppConfig {
       String.fromEnvironment('API_BASE_URL', defaultValue: '');
 
   /// Network timeout for every request.
-  static const Duration requestTimeout = Duration(seconds: 20);
+  ///
+  /// Deliberately generous. A free-tier server sleeps after fifteen minutes
+  /// idle and can take the better part of a minute to wake, and a twenty
+  /// second timeout turned that wait into "cannot reach the server" - a
+  /// failure the user cannot act on for a server that was merely starting.
+  ///
+  /// Drop this back to about twenty seconds once the API runs on an instance
+  /// that does not sleep; until then a slow first request beats a false error.
+  static const Duration requestTimeout = Duration(seconds: 60);
 
   /// Resolved API base URL, including the `/api` prefix.
   ///
