@@ -41,6 +41,14 @@ app:
       - "http://localhost:3001"
       - "https://brightfuture.best"
 
+# ClickPesa mobile money (Tanzania). Values come from the environment - never
+# commit the api key. Put them in backend/.env.local (gitignored) and load with:
+#   set -a; source backend/.env.local; set +a
+clickpesa:
+  base-url: ${CLICKPESA_BASE_URL:https://api.clickpesa.com/third-parties}
+  client-id: ${CLICKPESA_CLIENT_ID:}
+  api-key: ${CLICKPESA_API_KEY:}
+
 # Springdoc OpenAPI Swagger documentation configuration
 springdoc:
   api-docs:
