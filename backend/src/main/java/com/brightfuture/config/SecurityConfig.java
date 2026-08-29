@@ -54,6 +54,10 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/h2-console/**").permitAll()
                         // Render polls this to decide whether the instance is live.
                         .requestMatchers("/actuator/health").permitAll()
+                        // ClickPesa's payment callback. It cannot hold a JWT, so
+                        // it authenticates with the secret in its path and is
+                        // verified by re-querying ClickPesa - see PaymentController.
+                        .requestMatchers(HttpMethod.POST, "/api/payments/webhook/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/courses/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasRole("ADMIN")

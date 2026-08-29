@@ -58,6 +58,7 @@ app:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
 
 clickpesa:
+  webhook-secret: ${CLICKPESA_WEBHOOK_SECRET:}
   base-url: ${CLICKPESA_BASE_URL:https://api.clickpesa.com/third-parties}
   client-id: ${CLICKPESA_CLIENT_ID:}
   api-key: ${CLICKPESA_API_KEY:}

@@ -58,6 +58,11 @@ services:
       - key: CLICKPESA_API_KEY
         sync: false
 
+      # Secret embedded in the webhook URL you register with ClickPesa:
+      #   https://<your-api>/api/payments/webhook/<this value>
+      - key: CLICKPESA_WEBHOOK_SECRET
+        generateValue: true
+
       # ── CORS: the web origins allowed to call this API ────────
       # The mobile app is not a browser and is unaffected by this.
       - key: CORS_ALLOWED_ORIGINS

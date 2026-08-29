@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +60,9 @@ public class PaymentController {
     private final CoursePaymentRepository paymentRepository;
     private final EnrollmentService enrollmentService;
     private final SecurityUtils securityUtils;
+
+    @org.springframework.beans.factory.annotation.Value("${clickpesa.webhook-secret:}")
+    private String webhookSecret;
 
     public PaymentController(ClickPesaService clickPesa,
                              CourseRepository courseRepository,
@@ -195,22 +200,7 @@ public class PaymentController {
                     : String.valueOf(record.getOrDefault("status", "PROCESSING"));
 
             if (payment != null) {
-                PaymentStatus mapped = mapStatus(status);
-                if (mapped != payment.getStatus()) {
-                    payment.setStatus(mapped);
-                    paymentRepository.save(payment);
-                }
-
-                // Settling is what grants access. Enrolling here rather than
-                // trusting the client means a student who closes the app mid
-                // payment is still enrolled the next time the status is read.
-                if (mapped == PaymentStatus.PAID) {
-                    try {
-                        enrollmentService.enroll(userId, payment.getCourse().getId());
-                    } catch (RuntimeException e) {
-                        log.error("Payment {} settled but enrolment failed", orderReference, e);
-                    }
-                }
+                settle(payment, status);
             }
 
             Map<String, Object> payload = new HashMap<>();
@@ -222,6 +212,124 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                     .body(ApiResponse.error(e.getMessage()));
         }
+    }
+
+    /**
+     * ClickPesa calls this when a payment changes state, so a student who
+     * closes the app mid-payment is still enrolled without waiting for their
+     * next poll.
+     *
+     * <p>The body is treated purely as a trigger. Its claimed status is never
+     * believed: the reference is looked up in our own records and the true status
+     * is fetched from ClickPesa over an authenticated call. A forged webhook
+     * therefore achieves nothing beyond causing one extra API request.
+     *
+     * <p>The secret in the path is a cheap first filter so obvious noise never
+     * reaches the gateway. Configure the URL in the ClickPesa dashboard as
+     * {@code https://your-api/api/payments/webhook/<CLICKPESA_WEBHOOK_SECRET>}.
+     */
+    @PostMapping("/webhook/{secret}")
+    public ResponseEntity<ApiResponse<String>> webhook(
+            @PathVariable String secret,
+            @RequestBody(required = false) Map<String, Object> body) {
+
+        // Fail closed: with no secret configured, no webhook is accepted.
+        if (webhookSecret == null || webhookSecret.isBlank()
+                || !MessageDigest.isEqual(
+                        secret.getBytes(StandardCharsets.UTF_8),
+                        webhookSecret.getBytes(StandardCharsets.UTF_8))) {
+            log.warn("Rejected a ClickPesa webhook with a bad secret.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Not found."));
+        }
+
+        String orderReference = extractReference(body);
+        if (orderReference == null) {
+            // 200 on purpose: the payload is unusable, and a non-2xx would make
+            // ClickPesa retry something that can never succeed.
+            log.warn("ClickPesa webhook carried no order reference: {}", body);
+            return ResponseEntity.ok(ApiResponse.message("Ignored."));
+        }
+
+        CoursePayment payment = paymentRepository.findByOrderReference(orderReference).orElse(null);
+        if (payment == null) {
+            log.warn("ClickPesa webhook for an unknown reference: {}", orderReference);
+            return ResponseEntity.ok(ApiResponse.message("Unknown reference."));
+        }
+        if (payment.getStatus() == PaymentStatus.PAID) {
+            return ResponseEntity.ok(ApiResponse.message("Already settled."));
+        }
+
+        if (!clickPesa.isConfigured()) {
+            log.error("ClickPesa webhook received but no credentials are configured.");
+            return ResponseEntity.ok(ApiResponse.message("Not configured."));
+        }
+
+        try {
+            String token = clickPesa.generateToken();
+            Map<String, Object> record = clickPesa.queryPayment(token, orderReference);
+            String status = record == null
+                    ? "PROCESSING"
+                    : String.valueOf(record.getOrDefault("status", "PROCESSING"));
+            settle(payment, status);
+        } catch (ClickPesaService.ClickPesaException e) {
+            // Non-2xx so ClickPesa retries: this failure is transient.
+            log.error("Could not verify webhook for {}", orderReference, e);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(ApiResponse.error("Could not verify with ClickPesa."));
+        }
+
+        return ResponseEntity.ok(ApiResponse.message("Processed."));
+    }
+
+    /**
+     * Records the verified status and, when it is PAID, enrols the student.
+     *
+     * <p>Enrolment happens here rather than in the client so that closing the
+     * app mid-payment cannot cost a student the course they just paid for.
+     */
+    private void settle(CoursePayment payment, String rawStatus) {
+        PaymentStatus mapped = mapStatus(rawStatus);
+        if (mapped != payment.getStatus()) {
+            payment.setStatus(mapped);
+            paymentRepository.save(payment);
+        }
+        if (mapped == PaymentStatus.PAID) {
+            try {
+                enrollmentService.enroll(
+                        payment.getUser().getId(), payment.getCourse().getId());
+            } catch (RuntimeException e) {
+                log.error("Payment {} settled but enrolment failed",
+                        payment.getOrderReference(), e);
+            }
+        }
+    }
+
+    /**
+     * Pulls the order reference out of whatever shape the callback arrives in -
+     * top level, or nested under `data`/`payment`, and in either camelCase or
+     * snake_case.
+     */
+    @SuppressWarnings("unchecked")
+    private static String extractReference(Map<String, Object> body) {
+        if (body == null) {
+            return null;
+        }
+        for (String key : new String[]{"orderReference", "order_reference"}) {
+            Object v = body.get(key);
+            if (v instanceof String s && !s.isBlank()) {
+                return s;
+            }
+        }
+        for (String nested : new String[]{"data", "payment"}) {
+            if (body.get(nested) instanceof Map<?, ?> m) {
+                String found = extractReference((Map<String, Object>) m);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 
     private static Map<String, Object> describe(CoursePayment payment, String status) {

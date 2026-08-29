@@ -51,6 +51,9 @@ app:
 # commit the api key. Put them in backend/.env.local (gitignored) and load with:
 #   set -a; source backend/.env.local; set +a
 clickpesa:
+  # Shared secret in the webhook URL path. Leave blank to reject every
+  # callback - the endpoint fails closed.
+  webhook-secret: ${CLICKPESA_WEBHOOK_SECRET:}
   base-url: ${CLICKPESA_BASE_URL:https://api.clickpesa.com/third-parties}
   client-id: ${CLICKPESA_CLIENT_ID:}
   api-key: ${CLICKPESA_API_KEY:}
