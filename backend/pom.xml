@@ -37,6 +37,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!-- Versioned schema migrations. A failed migration aborts start-up,
+             where Hibernate's ddl-auto=update logged the failure and carried on
+             with a half-migrated database. -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
         <!-- Health endpoint for the Render health check -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -19,6 +19,13 @@ spring:
       settings:
         web-allow-others: true
 
+  # Flyway migrations are PostgreSQL-specific, and local development runs on
+  # in-memory H2 that is thrown away on every restart, so Hibernate still
+  # builds the dev schema. Production is Flyway + validate - see
+  # application-prod.yml.
+  flyway:
+    enabled: false
+
   jpa:
     database-platform: ${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.H2Dialect}
     hibernate:

@@ -5,6 +5,7 @@ import com.brightfuture.entity.Course;
 import com.brightfuture.entity.Enrollment;
 import com.brightfuture.entity.EnrollmentStatus;
 import com.brightfuture.entity.PaymentStatus;
+import com.brightfuture.entity.Role;
 import com.brightfuture.entity.User;
 import com.brightfuture.exception.BadRequestException;
 import com.brightfuture.exception.ResourceNotFoundException;
@@ -54,7 +55,7 @@ public class EnrollmentService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
-        requirePaymentForPaidCourse(user.getId(), course);
+        requirePaymentForPaidCourse(user, course);
 
         return enrollmentRepository.findByUserAndCourse(user, course)
                 .map(EnrollmentDto::fromEntity)
@@ -80,13 +81,18 @@ public class EnrollmentService {
      * <p>Free courses (price 0) are unaffected, as is enrolling again in a
      * course already paid for.
      */
-    private void requirePaymentForPaidCourse(UUID userId, Course course) {
+    private void requirePaymentForPaidCourse(User user, Course course) {
         int price = course.getPrice() == null ? 0 : course.getPrice();
         if (price <= 0) {
             return;
         }
+        // Administrators run the hub; charging them to open their own course
+        // makes no sense, and they need to enrol to review course content.
+        if (user.getRole() == Role.ADMIN) {
+            return;
+        }
         boolean paid = paymentRepository.existsByUserIdAndCourseIdAndStatus(
-                userId, course.getId(), PaymentStatus.PAID);
+                user.getId(), course.getId(), PaymentStatus.PAID);
         if (!paid) {
             throw new BadRequestException(
                     "This course must be paid for before you can enrol. "

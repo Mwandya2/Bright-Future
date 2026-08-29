@@ -23,14 +23,26 @@ spring:
       minimum-idle: 1
       connection-timeout: 30000
 
+  # Flyway owns the schema. Every change is a numbered file in
+  # db/migration, applied in order, and a failure ABORTS START-UP rather than
+  # leaving a half-migrated database behind - which is exactly what
+  # ddl-auto=update did when it could not add a NOT NULL column to a populated
+  # table, logging the error and serving broken queries afterwards.
+  flyway:
+    enabled: true
+    # The production database already exists, built by ddl-auto. This records
+    # it as version 1 instead of trying to create tables that are there.
+    baseline-on-migrate: true
+    baseline-version: 1
+    # Refuse to run if a previously-applied migration file has been edited.
+    validate-on-migrate: true
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      # `update` lets Hibernate create the schema on first boot. Once the
-      # tables exist and you have real data, switch this to `validate` and
-      # manage changes with migrations - `update` never drops or renames, so
-      # it silently leaves stale columns behind and cannot be reviewed.
-      ddl-auto: ${JPA_DDL_AUTO:update}
+      # `validate` only checks that the schema matches the entities. Hibernate
+      # no longer changes anything - Flyway does, visibly and in order.
+      ddl-auto: ${JPA_DDL_AUTO:validate}
     open-in-view: false
     show-sql: false
 

@@ -41,7 +41,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
-    if (!course.isFree) {
+    // Administrators run the hub and are not charged for its courses - they
+    // need to enrol to review content. The backend applies the same rule, so
+    // this is a matching UI shortcut rather than the thing enforcing it.
+    if (!course.isFree && !auth.isAdmin) {
       final bool? paid = await Navigator.of(context).push<bool>(
         MaterialPageRoute<bool>(
           builder: (_) => CheckoutScreen(course: course),
