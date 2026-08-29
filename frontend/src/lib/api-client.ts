@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
 import type { ApiResponse } from "./types";
+import { AUTH_COOKIE_NAME } from "./auth-cookie";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
-export const AUTH_COOKIE_NAME = "bf_auth_token";
+// Re-exported so existing imports from "@/lib/api-client" keep working.
+export { AUTH_COOKIE_NAME };
 
 async function getAuthToken(): Promise<string | null> {
   // Check if executing in Next.js server context

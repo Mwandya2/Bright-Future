@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { AUTH_COOKIE_NAME } from "@/lib/api-client";
+import { AUTH_COOKIE_NAME } from "@/lib/auth-cookie";
 import { isTheAdmin } from "@/lib/admin";
 
 /**
