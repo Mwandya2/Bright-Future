@@ -26,6 +26,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final String adminEmail;
     private final String adminPassword;
+    private final boolean seedDemoData;
 
     public DataInitializer(
             UserRepository userRepository,
@@ -34,7 +35,8 @@ public class DataInitializer implements CommandLineRunner {
             PrintOrderRepository printOrderRepository,
             PasswordEncoder passwordEncoder,
             @Value("${app.admin.email:admin@brightfuture.best.com}") String adminEmail,
-            @Value("${app.admin.default-password:Admin@BrightFuture2026!}") String adminPassword) {
+            @Value("${app.admin.default-password:Admin@BrightFuture2026!}") String adminPassword,
+            @Value("${app.seed.demo-data:true}") boolean seedDemoData) {
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.labBookingRepository = labBookingRepository;
@@ -42,18 +44,29 @@ public class DataInitializer implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
+        this.seedDemoData = seedDemoData;
     }
 
     @Override
     @Transactional
     public void run(String... args) {
-        seedUsers();
+        // The admin account is provisioned everywhere - without it nobody can
+        // administer a fresh deployment.
+        seedAdmin();
+
+        // Everything below is demo content: a student with a password that is
+        // printed in the README, plus fake bookings and orders. It must never
+        // reach a public deployment, so it is off unless explicitly enabled.
+        if (!seedDemoData) {
+            log.info("Demo seed data disabled (app.seed.demo-data=false).");
+            return;
+        }
+        seedDemoStudent();
         seedCourses();
         seedSampleData();
     }
 
-    private void seedUsers() {
-        // Admin Account
+    private void seedAdmin() {
         if (!userRepository.existsByEmailIgnoreCase(adminEmail)) {
             User admin = User.builder()
                     .email(adminEmail)
@@ -65,8 +78,9 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(admin);
             log.info("Provisioned default admin account: {}", adminEmail);
         }
+    }
 
-        // Demo Student Account
+    private void seedDemoStudent() {
         String demoStudentEmail = "student@brightfuture.best.com";
         if (!userRepository.existsByEmailIgnoreCase(demoStudentEmail)) {
             User student = User.builder()
