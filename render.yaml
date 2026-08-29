@@ -1,0 +1,63 @@
+# Render Blueprint for the Bright Future backend.
+#
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo.
+# Render reads this file and creates the service; you then fill in the
+# secrets marked `sync: false` in the dashboard (they are never committed).
+#
+# The database is Supabase, not Render Postgres, so no database block here.
+
+services:
+  - type: web
+    name: brightfuture-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: frankfurt          # closest Render region to Tanzania
+    plan: free                 # free instances sleep after 15 min idle
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      # Render injects PORT; Spring Boot reads SERVER_PORT.
+      - key: SERVER_PORT
+        fromService:
+          type: web
+          name: brightfuture-api
+          property: port
+
+      # ── Supabase (session pooler, port 5432) ──────────────────
+      # jdbc:postgresql://aws-1-eu-central-1.pooler.supabase.com:5432/postgres?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME     # postgres.<your-project-ref>
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+
+      # ── Secrets ───────────────────────────────────────────────
+      # JWT_SECRET must be at least 256 bits. Generate one with:
+      #   openssl rand -base64 48
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+      # ── ClickPesa ─────────────────────────────────────────────
+      - key: CLICKPESA_CLIENT_ID
+        sync: false
+      - key: CLICKPESA_API_KEY
+        sync: false
+
+      # ── CORS: the web origins allowed to call this API ────────
+      # The mobile app is not a browser and is unaffected by this.
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://brightfuture.best,https://www.brightfuture.best
+
+      # Set to `validate` once the schema is stable and you move to migrations.
+      - key: JPA_DDL_AUTO
+        value: update

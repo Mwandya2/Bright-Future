@@ -1,0 +1,83 @@
+# Production profile: activated with SPRING_PROFILES_ACTIVE=prod
+#
+# Everything sensitive comes from the environment. Nothing in this file is a
+# secret, and there are deliberately NO fallback values for credentials - the
+# app should fail to start rather than boot with a known default password.
+
+spring:
+  datasource:
+    # Supabase gives you three connection strings. Use the SESSION POOLER
+    # (port 5432, host aws-<n>-<region>.pooler.supabase.com) - it is IPv4 and
+    # keeps prepared statements working.
+    #
+    # Do NOT use the transaction pooler on 6543: it breaks Hibernate's
+    # prepared statements. Do NOT use the direct db.<ref>.supabase.co host
+    # either: it is IPv6-only and Render cannot reach it.
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      # Supabase's free tier allows few connections and the pooler is shared.
+      maximum-pool-size: ${DB_POOL_SIZE:5}
+      minimum-idle: 1
+      connection-timeout: 30000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      # `update` lets Hibernate create the schema on first boot. Once the
+      # tables exist and you have real data, switch this to `validate` and
+      # manage changes with migrations - `update` never drops or renames, so
+      # it silently leaves stale columns behind and cannot be reviewed.
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    open-in-view: false
+    show-sql: false
+
+  h2:
+    console:
+      enabled: false
+
+app:
+  seed:
+    # Never seed the demo student or the fake bookings into a public database.
+    demo-data: false
+  jwt:
+    # No default: an unset secret must stop the deploy, not silently ship the
+    # signing key that is committed in application.yml.
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION_MS:604800000}
+  admin:
+    email: ${ADMIN_EMAIL}
+    default-password: ${ADMIN_PASSWORD}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+clickpesa:
+  base-url: ${CLICKPESA_BASE_URL:https://api.clickpesa.com/third-parties}
+  client-id: ${CLICKPESA_CLIENT_ID:}
+  api-key: ${CLICKPESA_API_KEY:}
+
+# The H2 console and Swagger UI are development tools. Swagger stays available
+# because the mobile app's contract is useful to inspect; drop `enabled: true`
+# if you would rather not publish your API surface.
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+
+# Only the health endpoint is exposed - not env, beans, heapdump, etc.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.brightfuture: INFO
