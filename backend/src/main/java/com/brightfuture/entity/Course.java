@@ -53,7 +53,15 @@ public class Course {
      * Apple permits a third-party gateway for.
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "delivery_mode", nullable = false)
+    @Column(
+        name = "delivery_mode",
+        nullable = false,
+        length = 16,
+        // The DEFAULT matters: without it, adding a NOT NULL column to a table
+        // that already has rows fails, Hibernate's `update` logs it and carries
+        // on, and every later query for a course dies on the missing column.
+        columnDefinition = "varchar(16) default 'IN_PERSON'"
+    )
     private DeliveryMode deliveryMode = DeliveryMode.IN_PERSON;
 
     @CreationTimestamp
